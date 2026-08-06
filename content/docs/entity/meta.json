@@ -1,0 +1,4 @@
+{
+  "title": "Entity Management",
+  "pages": ["index", "register-entity", "edit-entity", "delete-entity", "branding", "domains", "packages", "billing"]
+}

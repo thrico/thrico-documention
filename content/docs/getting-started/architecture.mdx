@@ -1,0 +1,51 @@
+---
+title: Platform Architecture
+description: Understand the technical architecture of the Thrico platform.
+---
+
+## Overview
+
+Thrico is built on a modern, scalable microservices architecture designed for high availability and performance.
+
+## Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Client Layer                         │
+│  ┌──────────┐  ┌──────────────┐  ┌──────────────────┐  │
+│  │ Web App  │  │ Mobile Apps  │  │ Entity Dashboard │  │
+│  └────┬─────┘  └──────┬───────┘  └────────┬─────────┘  │
+└───────┼───────────────┼───────────────────┼─────────────┘
+        │               │                   │
+┌───────▼───────────────▼───────────────────▼─────────────┐
+│                    API Gateway                           │
+│              (GraphQL + REST)                            │
+└───────┬───────────────┬───────────────────┬─────────────┘
+        │               │                   │
+┌───────▼───────┐ ┌─────▼──────┐  ┌────────▼─────────┐
+│   Auth Service│ │ Core API   │  │ Notification     │
+│               │ │            │  │ Service          │
+└───────────────┘ └────────────┘  └──────────────────┘
+```
+
+## Technology Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js, React |
+| API | GraphQL (Apollo), REST |
+| Backend | Node.js, TypeScript |
+| Database | PostgreSQL |
+| Cache | Redis |
+| Search | Elasticsearch |
+| Storage | AWS S3 |
+| CDN | CloudFront |
+| Infrastructure | AWS ECS, Docker |
+
+## Key Design Principles
+
+1. **Microservices** — Each service handles a specific domain (auth, content, notifications, etc.)
+2. **Event-Driven** — Services communicate via events for loose coupling
+3. **Multi-Tenant** — Single deployment serves multiple entities securely
+4. **API-First** — Every feature is accessible via API
+5. **Scalable** — Horizontally scalable services behind load balancers

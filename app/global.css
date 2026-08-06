@@ -1,0 +1,211 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+@source "../node_modules/fumadocs-ui/dist/**/*.js";
+@source "./**/*.{ts,tsx}";
+@source "../components/**/*.{ts,tsx}";
+@source "../content/**/*.{md,mdx}";
+@source "../mdx-components.tsx";
+
+@theme {
+  --color-brand-50: #f0f0ff;
+  --color-brand-100: #e0e0ff;
+  --color-brand-200: #c4b5fd;
+  --color-brand-300: #a78bfa;
+  --color-brand-400: #8b5cf6;
+  --color-brand-500: #7c3aed;
+  --color-brand-600: #6d28d9;
+  --color-brand-700: #5b21b6;
+  --color-brand-800: #4c1d95;
+  --color-brand-900: #3b0764;
+  --color-brand-950: #1e0038;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  --animate-fade-in: fade-in 0.5s ease-out forwards;
+  --animate-slide-up: slide-up 0.6s ease-out forwards;
+  --animate-shimmer: shimmer 8s ease-in-out infinite;
+  --animate-gradient-shift: gradient-shift 6s ease infinite;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --fd-primary: 262 83% 58%;
+  --fd-background: 0 0% 100%;
+  --fd-foreground: 260 10% 10%;
+  --fd-muted: 260 10% 96%;
+  --fd-muted-foreground: 260 5% 40%;
+  --fd-card: 0 0% 100%;
+  --fd-border: 260 10% 90%;
+  --fd-ring: 262 83% 58%;
+}
+
+.dark {
+  --fd-primary: 262 83% 68%;
+  --fd-background: 260 20% 5%;
+  --fd-foreground: 260 5% 95%;
+  --fd-muted: 260 15% 12%;
+  --fd-muted-foreground: 260 5% 55%;
+  --fd-card: 260 15% 8%;
+  --fd-border: 260 15% 15%;
+  --fd-ring: 262 83% 68%;
+}
+
+/* Premium scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(260 10% 70%);
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(260 10% 30%);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(262 83% 58%);
+}
+
+/* Hero gradient animation */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    hsl(262, 83%, 58%) 0%,
+    hsl(280, 80%, 50%) 25%,
+    hsl(240, 80%, 55%) 50%,
+    hsl(262, 83%, 58%) 75%,
+    hsl(300, 70%, 50%) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* Grid background pattern */
+.grid-pattern {
+  background-image:
+    linear-gradient(to right, hsl(262 83% 58% / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(262 83% 58% / 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.dark .grid-pattern {
+  background-image:
+    linear-gradient(to right, hsl(262 83% 68% / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(262 83% 68% / 0.06) 1px, transparent 1px);
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: hsl(0 0% 100% / 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid hsl(260 10% 90%);
+  transition: all 0.3s ease;
+}
+
+.dark .glass-card {
+  background: hsl(260 15% 10% / 0.6);
+  border: 1px solid hsl(260 15% 18%);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px hsl(262 83% 58% / 0.1);
+  border-color: hsl(262 83% 58% / 0.3);
+}
+
+.dark .glass-card:hover {
+  box-shadow: 0 8px 30px hsl(262 83% 68% / 0.15);
+  border-color: hsl(262 83% 68% / 0.4);
+}
+
+/* Glow effect */
+.glow {
+  position: relative;
+}
+
+.glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, hsl(262 83% 58% / 0.4), hsl(280 80% 50% / 0.4));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+  filter: blur(8px);
+}
+
+.glow:hover::before {
+  opacity: 1;
+}
+
+/* Stagger animations for children */
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}

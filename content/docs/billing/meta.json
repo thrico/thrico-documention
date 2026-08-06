@@ -1,0 +1,4 @@
+{
+  "title": "Billing",
+  "pages": ["index", "subscriptions", "invoices", "payments", "plans", "usage"]
+}

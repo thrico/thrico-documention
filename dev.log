@@ -1,0 +1,22 @@
+
+> thrico-documentation@1.0.0 dev /Users/pulseplay/thrico/thrico-documentation
+> next dev
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/pulseplay/pnpm-lock.yaml as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /Users/pulseplay/thrico/thrico-documentation/pnpm-lock.yaml
+
+[MDX] updated map file in 11.216375000000028ms
+[MDX] started dev server
+ ⚠ Port 3000 is in use by process 48940, using available port 3001 instead.
+   ▲ Next.js 15.5.22
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.1.40:3001
+
+ ✓ Starting...
+ ✓ Ready in 1947ms
+[MDX] updated map file in 49.738791999872774ms
+[MDX] updated map file in 15.37216700008139ms

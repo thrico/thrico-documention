@@ -1,0 +1,4 @@
+{
+  "title": "Security",
+  "pages": ["index", "authentication", "sso", "roles", "permissions", "audit-logs", "password-policies"]
+}

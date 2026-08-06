@@ -1,0 +1,77 @@
+---
+title: User Roles & Permissions
+description: Learn about the different user roles in Thrico and their permissions.
+---
+
+## Role Hierarchy
+
+Thrico uses a hierarchical role system where each role inherits permissions from the roles below it.
+
+```
+Super Admin
+    └── Entity Admin
+            └── Community Admin
+                    └── Moderator
+                            └── Member
+```
+
+## Role Details
+
+### Super Admin
+
+The **Super Admin** has full control over the entire Thrico platform.
+
+- Manage all entities
+- Configure platform settings
+- Access all analytics
+- Manage billing and subscriptions
+- Create and delete entities
+
+### Entity Admin
+
+The **Entity Admin** manages a specific organization within Thrico.
+
+- Configure entity branding and settings
+- Manage communities within the entity
+- Invite and manage members
+- Configure custom domains
+- View entity analytics
+
+### Community Admin
+
+The **Community Admin** operates a specific community.
+
+- Configure community settings
+- Manage community content
+- Assign moderator roles
+- View community analytics
+- Manage events and groups
+
+### Moderator
+
+**Moderators** help manage content and members within a community.
+
+- Approve or reject posts
+- Manage reported content
+- Mute or warn members
+- Manage event RSVPs
+
+### Member
+
+**Members** are regular users who participate in communities.
+
+- Create posts and stories
+- Join groups and events
+- Use the marketplace
+- Participate in discussions
+
+## Permission Matrix
+
+| Permission | Super Admin | Entity Admin | Community Admin | Moderator | Member |
+|-----------|:-----------:|:------------:|:--------------:|:---------:|:------:|
+| Manage Entities | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Manage Communities | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Community Settings | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Moderate Content | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Create Posts | ✅ | ✅ | ✅ | ✅ | ✅ |
+| View Analytics | ✅ | ✅ | ✅ | ❌ | ❌ |

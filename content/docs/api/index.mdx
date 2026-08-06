@@ -1,0 +1,52 @@
+---
+title: API Reference
+description: Integrate with Thrico using our GraphQL and REST APIs.
+---
+
+## Overview
+
+Thrico provides powerful APIs for integrating with external systems and building custom applications on top of the platform.
+
+## Available APIs
+
+### GraphQL API
+
+Our primary API uses **GraphQL**, providing flexible and efficient data querying.
+
+```graphql
+query {
+  community(id: "abc123") {
+    name
+    members {
+      id
+      name
+      email
+    }
+  }
+}
+```
+
+### REST API
+
+For simpler integrations, we also offer a **REST API** with standard HTTP methods.
+
+```bash
+curl -X GET https://api.thrico.com/v1/communities \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+## Features
+
+- **Authentication** — API key and OAuth2 authentication
+- **GraphQL** — Flexible queries and mutations
+- **REST** — Standard HTTP endpoints
+- **Webhooks** — Real-time event notifications
+- **SDK** — Client libraries for popular languages
+- **Rate Limits** — Fair usage policies
+
+<Cards>
+  <Card title="Authentication" href="/docs/api/authentication" />
+  <Card title="GraphQL API" href="/docs/api/graphql" />
+  <Card title="REST API" href="/docs/api/rest" />
+  <Card title="Webhooks" href="/docs/api/webhooks" />
+</Cards>

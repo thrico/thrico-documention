@@ -1,0 +1,4 @@
+{
+  "title": "Feed",
+  "pages": ["index", "posts", "stories", "reactions", "comments", "moderation"]
+}

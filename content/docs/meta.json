@@ -1,0 +1,28 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "getting-started",
+    "entity",
+    "community",
+    "members",
+    "feed",
+    "groups",
+    "events",
+    "marketplace",
+    "donations",
+    "mentorship",
+    "jobs",
+    "gamification",
+    "ai",
+    "analytics",
+    "notifications",
+    "email-templates",
+    "mobile-apps",
+    "security",
+    "billing",
+    "api",
+    "troubleshooting",
+    "faq",
+    "release-notes"
+  ]
+}
