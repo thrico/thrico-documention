@@ -1,0 +1,202 @@
+---
+title: How to Connect Thrico to Salesforce CRM
+description: Step-by-step administrator guide to integrate Salesforce Developer, Enterprise, and Unlimited editions with Thrico via OAuth 2.0 PKCE.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+The Thrico-Salesforce integration connects your CRM data with your Thrico community platform, enabling bi-directional contact synchronization, automatic member provisioning, and rule-based community assignments.
+
+---
+
+## 🌟 Overview
+
+Connecting Salesforce to Thrico bridges customer relationship records directly with member community spaces and engagement activities.
+
+### Key Capabilities:
+- 🔄 **Real-Time Sync**: Automatically provision and update Thrico community profiles when contacts, leads, or accounts change in Salesforce.
+- 🏷️ **Custom Field Mapping**: Map standard (`Email`, `Phone`, `Title`) and custom Salesforce fields (`Membership_Tier__c`, `Points__c`, `Industry`) to Thrico member attributes.
+- 🛡️ **Enterprise Security**: Uses OAuth 2.0 with **RFC 7636 PKCE** (Proof Key for Code Exchange) and **AES-256** encrypted token storage at rest.
+- ⚡ **Zero-Code Setup**: Connect in under 2 minutes through the Thrico Admin Dashboard.
+
+---
+
+## 📋 Prerequisites
+
+Before starting the setup, ensure you have:
+
+1. A **Salesforce Org** (Production, Developer Edition, or Sandbox) with **System Administrator** rights or the `Customize Application` permission.
+2. An active **Thrico Admin Dashboard** account with **Admin** privileges.
+
+---
+
+## 🚀 Step-by-Step Connection Guide
+
+<Steps>
+<Step>
+### Step 1: Create an External Client App in Salesforce
+
+1. Log in to your Salesforce instance ([login.salesforce.com](https://login.salesforce.com) or your custom domain).
+2. Click the **Gear Icon (⚙️)** in the top right header &rarr; select **Setup**.
+3. In the left-hand *Quick Find* box, type **`App Manager`** and select it under the *Apps* menu.
+4. In the top-right corner, click:
+   - **`New External Client App`** *(in modern Salesforce Lightning)*  
+   *— OR —*
+   - **`New Connected App`** *(in Salesforce Classic / Standard Setup)*
+
+<Callout type="info">
+  Salesforce External Client Apps are the modern successor to Connected Apps and provide enhanced OAuth security scoping. Both types are fully supported by Thrico.
+</Callout>
+</Step>
+
+<Step>
+### Step 2: Configure App Details & OAuth Settings
+
+1. In the **Basic Information** section, provide:
+   - **App Name**: `Thrico Community Integration`
+   - **API Name**: `Thrico_Community_Integration`
+   - **Contact Email**: `your-admin-email@yourdomain.com`
+
+2. Check the box: **☑️ Enable OAuth Settings** (or *Enable OAuth*).
+
+3. In the **Callback URL** field, enter your Thrico endpoint:
+
+<Tabs items={["Production (admin.thrico.app)", "Development / Local"]}>
+  <Tab value="Production (admin.thrico.app)">
+```text
+https://admin.thrico.app/integrations/crm/callback
+```
+  </Tab>
+  <Tab value="Development / Local">
+```text
+http://localhost:1111/integrations/crm/callback
+```
+  </Tab>
+</Tabs>
+
+4. Under **Selected OAuth Scopes**, select and move the following 4 scopes to **Selected**:
+   - `Manage user data via APIs (api)`
+   - `Perform requests at any time (refresh_token, offline_access)`
+   - `Access unique user identifiers (openid)`
+   - `Full access (full)`
+
+5. Under Security / Flow Policies:
+   - ☑️ Check **Require Secret for Web Server Flow**
+   - ☑️ Check **Require Proof Key for Code Exchange (PKCE)**
+
+6. Click **Save**, then click **Continue**.
+
+<Callout type="warn">
+  New External Client Apps and Connected Apps in Salesforce can take **2 to 10 minutes** to propagate across Salesforce global OAuth servers before they can accept authorization requests.
+</Callout>
+</Step>
+
+<Step>
+### Step 3: Retrieve Consumer Key & Secret
+
+1. Under the **OAuth Policies** or **Manage Consumer Details** section of your newly created app, click **`Manage Consumer Details`** (or *View Consumer Details*).
+2. Salesforce may prompt you for a 2FA verification code sent to your admin email.
+3. Copy the two generated security keys:
+   - 🔑 **Consumer Key** *(Client ID)*
+   - 🔒 **Consumer Secret** *(Client Secret)*
+
+<Callout type="warn">
+  Never share or commit your Consumer Secret into public repositories. Thrico encrypts and securely manages tokens using AES-256 GCM.
+</Callout>
+</Step>
+
+<Step>
+### Step 4: Authorize from the Thrico Dashboard
+
+1. Open your **Thrico Dashboard** &rarr; navigate to:
+   ```text
+   https://admin.thrico.app/settings/integrations/crm
+   ```
+2. Locate the **Salesforce CRM** card and click **`Connect Salesforce`**.
+3. Choose your Salesforce environment:
+   - **Production / Developer Edition** (`login.salesforce.com`)
+   - **Sandbox** (`test.salesforce.com`)
+4. You will be redirected to the secure Salesforce OAuth authorization screen.
+5. Review the requested permissions and click **Allow**.
+6. You will be automatically redirected back to Thrico with the status badge updated to **CONNECTED**.
+</Step>
+</Steps>
+
+---
+
+## ⚙️ Post-Connection Setup
+
+Once your Salesforce integration is active, configure your data pipeline:
+
+### 1. Schema Discovery & Custom Field Mapping
+Navigate to the **Field Mapping** tab:
+- Thrico automatically queries your Salesforce metadata API to discover all standard and custom fields (`Account.Industry`, `LeadSource`, `Membership_Tier__c`, `Points__c`).
+- Map any Salesforce field directly to Thrico member profiles or custom member attributes.
+- Configure value transformations (e.g. uppercase, lowercase, enum dictionary mapping, date conversions).
+
+### 2. Initial Data Import
+Navigate to the **Sync & History** tab:
+- Click **`⚡ Sync Now`** to initiate an initial bulk import of your Salesforce contacts and accounts.
+- View real-time sync progress, logs, processed records, and reconciliation metrics.
+
+### 3. Automated Community Rules
+Navigate to the **Community Rules** tab to configure dynamic membership workflows:
+- *Rule Example*: If `Account_Tier == "VIP"`, automatically assign the member to the **VIP Private Space**.
+- *Rule Example*: If `Contact.Status == "Inactive"`, restrict access to private discussion channels.
+
+---
+
+## 🔒 Security & Data Governance
+
+| Feature | Standard / Specification |
+| :--- | :--- |
+| **Authentication Protocol** | OAuth 2.0 with RFC 7636 SHA-256 PKCE & Web Server Flow |
+| **Token Encryption** | AES-256 GCM Encryption at Rest with KMS Key Rotation |
+| **Data in Transit** | TLS 1.3 End-to-End Encryption |
+| **API Limit Protection** | Automated rate limiting with batching & incremental delta sync |
+| **Compliance** | SOC 2 Type II and GDPR Compliant Data Handling |
+
+---
+
+## ❓ Frequently Asked Questions (FAQ)
+
+<Accordions>
+<Accordion title="Can I connect a Salesforce Sandbox first before going to Production?">
+Yes. In the Thrico connection dialog, select **Sandbox (`test.salesforce.com`)**. When your staging tests are complete and you are ready for Production, click **Reconnect** on the Salesforce card and select **Production (`login.salesforce.com`)**.
+</Accordion>
+
+<Accordion title="What happens when a contact is deleted or deactivated in Salesforce?">
+You can configure the deactivation policy in Thrico under *Connection Settings*. Options include:
+- **Deactivate Member**: Temporarily suspend the user's community access.
+- **Remove Spaces**: Retain the user's account but remove them from private spaces.
+- **Retain Profile**: Retain the community profile without updates.
+</Accordion>
+
+<Accordion title="Does Thrico count against my Salesforce API limits?">
+Thrico uses high-efficiency batch pagination and incremental delta synchronization (querying only records modified since the last sync timestamp `SystemModstamp`), minimizing API usage and respecting Salesforce daily governor limits.
+</Accordion>
+
+<Accordion title="How do I resolve 'error: redirect_uri_mismatch'?">
+Ensure the Callback URL in your Salesforce External Client App / Connected App exactly matches `https://admin.thrico.app/integrations/crm/callback`. Pay attention to trailing slashes and `http` vs `https`.
+</Accordion>
+
+<Accordion title="How do I resolve 'error: invalid_client' or 'unauthorized_client'?">
+1. Verify that **Require Secret for Web Server Flow** is enabled in your Salesforce OAuth settings.
+2. Confirm the Consumer Key and Consumer Secret are entered accurately without trailing whitespace.
+3. If the Connected App was just created, wait 5–10 minutes for Salesforce global replication.
+</Accordion>
+</Accordions>
+
+---
+
+## 🔗 Related Resources
+
+<Cards>
+  <Card title="Zoho CRM Integration" href="/docs/integrations/zoho" />
+  <Card title="Odoo CRM Integration" href="/docs/integrations/odoo" />
+  <Card title="CRM Hub Overview" href="/docs/integrations/crm" />
+</Cards>

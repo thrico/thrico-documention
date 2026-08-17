@@ -10,16 +10,13 @@ import {
   Code2,
   BarChart3,
   Sparkles,
-  Heart,
   Trophy,
-  Briefcase,
-  Bell,
-  Smartphone,
   ArrowRight,
   Search,
   BookOpen,
   Rocket,
   Zap,
+  Layers,
 } from "lucide-react";
 
 const categories = [
@@ -29,6 +26,13 @@ const categories = [
     icon: Rocket,
     href: "/docs/getting-started",
     color: "from-violet-500 to-purple-600",
+  },
+  {
+    title: "Integrations",
+    description: "Salesforce, Zoho, Workday, Shopify, SSO, and Webhooks.",
+    icon: Layers,
+    href: "/docs/integrations",
+    color: "from-blue-600 to-cyan-600",
   },
   {
     title: "Entity Management",

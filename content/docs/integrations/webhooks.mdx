@@ -1,0 +1,118 @@
+---
+title: Webhooks & Event Streams
+description: Build custom integrations and real-time event automations using Thrico's webhook delivery engine.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+Thrico **Webhooks** allow you to subscribe to real-time events that occur across your communities, member directories, events, and marketplaces. Whenever an event happens, Thrico sends an HTTP POST payload with JSON data to your configured webhook endpoint.
+
+```
+┌─────────────────┐        HTTP POST (Signed JSON)        ┌─────────────────┐
+│                 │ ────────────────────────────────────► │                 │
+│  Thrico Platform│                                       │   Your Server / │
+│  (Event Bus)    │ ◄──────────────────────────────────── │  Zapier / Make  │
+│                 │          HTTP 200 OK Response         │                 │
+└─────────────────┘                                       └─────────────────┘
+```
+
+---
+
+## Subscribed Event Topics
+
+| Topic Category | Event Name | Trigger Description |
+| :--- | :--- | :--- |
+| **Members** | `member.created` | Triggered when a new user registers or is imported |
+| | `member.updated` | Profile information or custom fields updated |
+| | `member.deleted` | Member account removed or deactivated |
+| **Community** | `community.post.created` | New feed post or article published |
+| | `community.comment.created` | New comment on a discussion thread |
+| **Events** | `event.rsvp.created` | Member RSVPs or purchases ticket for an event |
+| | `event.attended` | Member checks in at an event |
+| **Marketplace** | `order.created` | Customer completes an order |
+| | `order.paid` | Payment confirmed |
+| **Gamification** | `badge.awarded` | Member achieves a badge |
+| | `rank.updated` | Member advances to a new leaderboard rank |
+
+---
+
+## Verifying Webhook Signatures
+
+To ensure incoming webhooks originate from Thrico and have not been tampered with, every payload includes a `X-Thrico-Signature` header computed using **HMAC SHA-256** with your endpoint's webhook signing secret.
+
+<Tabs items={["Node.js / TypeScript", "Python", "Go"]}>
+<Tab value="Node.js / TypeScript">
+```typescript title="verify-webhook.ts"
+import crypto from "crypto";
+
+export function verifyThricoWebhook(
+  payload: string,
+  signatureHeader: string,
+  secret: string
+): boolean {
+  const hmac = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+
+  const expectedSignature = `sha256=${hmac}`;
+  return crypto.timingSafeEqual(
+    Buffer.from(signatureHeader),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+</Tab>
+<Tab value="Python">
+```python title="verify_webhook.py"
+import hmac
+import hashlib
+
+def verify_thrico_webhook(payload: bytes, signature_header: str, secret: str) -> bool:
+    expected_signature = "sha256=" + hmac.new(
+        secret.encode('utf-8'),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(signature_header, expected_signature)
+```
+</Tab>
+<Tab value="Go">
+```go title="verify_webhook.go"
+package main
+
+import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
+)
+
+func VerifyThricoWebhook(payload []byte, signatureHeader string, secret string) bool {
+	mac := hmac.New(sha256.New, []byte(secret))
+	mac.Write(payload)
+	expectedSignature := "sha256=" + hex.EncodeToString(mac.Sum(nil))
+	return hmac.Equal([]byte(signatureHeader), []byte(expectedSignature))
+}
+```
+</Tab>
+</Tabs>
+
+---
+
+## Retry Policy & Delivery Guarantees
+
+- **Timeout**: Webhook endpoints must respond with HTTP `2xx` within **5000ms**.
+- **Retry Schedule**: Exponential backoff with jitter up to **5 attempts** (10s, 1m, 5m, 15m, 1h).
+- **Dead-Letter Queue**: If all retries fail, events are preserved in your Thrico dashboard under **Failed Deliveries**, allowing manual review and 1-click redelivery.
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card title="Salesforce Setup Guide" href="/docs/integrations/salesforce" />
+  <Card title="CRM Hub Overview" href="/docs/integrations/crm" />
+  <Card title="API Reference" href="/docs/api" />
+</Cards>

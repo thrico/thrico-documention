@@ -1,0 +1,165 @@
+---
+title: How to Connect Thrico to Zoho CRM
+description: Step-by-step administrator guide to integrate Zoho CRM with Thrico supporting Global, India, EU, and AU data centers via OAuth 2.0.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+The Thrico-Zoho CRM integration connects your Zoho CRM contacts, leads, accounts, and custom modules directly with your Thrico community directory and engagement workflows.
+
+---
+
+## 🌟 Overview
+
+Synchronizing Zoho CRM with Thrico enables automatic member provisioning, contact profile enrichment, and community space auto-assignment.
+
+### Key Capabilities:
+- 🔄 **Multi-Region Support**: Seamless connection for Global (`.com`), India (`.in`), Europe (`.eu`), Australia (`.com.au`), Japan (`.jp`), and Canada (`.ca`) Zoho data centers.
+- 🏷️ **Dynamic Module & Field Discovery**: Automatically discovers standard modules (`Contacts`, `Leads`, `Accounts`) and custom fields using Zoho V8 API.
+- ⚡ **Auto-Token Refresh**: Long-lived offline refresh tokens ensure continuous background sync without re-authentication.
+- 🛡️ **Zero-Code Setup**: One-click authorization through the Thrico Admin Dashboard.
+
+---
+
+## 📋 Prerequisites
+
+1. A **Zoho CRM account** (Standard, Professional, Enterprise, or Ultimate) with Administrator permissions.
+2. Access to the **Zoho Developer Console** ([api-console.zoho.com](https://api-console.zoho.com) or your local region).
+3. Access to your **Thrico Admin Dashboard** (`https://admin.thrico.app`).
+
+---
+
+## 🚀 Step-by-Step Connection Guide
+
+<Steps>
+<Step>
+### Step 1: Open the Zoho API Console
+
+Navigate to the Zoho API Console corresponding to your organization's data center region:
+
+- 🌐 **Global / US**: [api-console.zoho.com](https://api-console.zoho.com/)
+- 🇮🇳 **India**: [api-console.zoho.in](https://api-console.zoho.in/)
+- 🇪🇺 **Europe**: [api-console.zoho.eu](https://api-console.zoho.eu/)
+- 🇦🇺 **Australia**: [api-console.zoho.com.au](https://api-console.zoho.com.au/)
+- 🇯🇵 **Japan**: [api-console.zoho.jp](https://api-console.zoho.jp/)
+- 🇨🇦 **Canada**: [api-console.zoho.ca](https://api-console.zoho.ca/)
+</Step>
+
+<Step>
+### Step 2: Create a Server-Based Client Application
+
+1. In the Zoho API Console, click **`Add Client`** (or **`Get Started`**).
+2. Hover over **Server-based Applications** and click **`Create Now`**.
+3. Fill in the application registration details:
+   - **Client Name**: `Thrico CRM Integration`
+   - **Homepage URL**: `https://admin.thrico.app`
+   - **Authorized Redirect URIs**: Enter your Thrico OAuth callback URL:
+
+<Tabs items={["Production (admin.thrico.app)", "Development / Local"]}>
+  <Tab value="Production (admin.thrico.app)">
+```text
+https://admin.thrico.app/integrations/crm/callback
+```
+  </Tab>
+  <Tab value="Development / Local">
+```text
+http://localhost:1111/integrations/crm/callback
+```
+  </Tab>
+</Tabs>
+
+4. Click **`Create`**.
+</Step>
+
+<Step>
+### Step 3: Copy Client ID & Client Secret
+
+1. Switch to the **Client Secret** tab on your newly created Zoho application.
+2. Copy the two credentials:
+   - 🔑 **Client ID** (e.g., `1000.TVBB9121HP9...`)
+   - 🔒 **Client Secret** (e.g., `4e8b39a...`)
+
+<Callout type="warn">
+  Keep your Client Secret confidential. Thrico securely encrypts and stores all credentials at rest using AES-256 GCM.
+</Callout>
+</Step>
+
+<Step>
+### Step 4: Authorize from the Thrico Dashboard
+
+1. Open your **Thrico Dashboard** &rarr; navigate to:
+   ```text
+   https://admin.thrico.app/settings/integrations/crm
+   ```
+2. Locate the **Zoho CRM** card and click **`Connect Zoho`**.
+3. Select your Zoho data center region (e.g., *India (.in)*, *Global (.com)*, or *Europe (.eu)*).
+4. Sign in to Zoho and click **`Accept`** on the OAuth permissions consent screen.
+5. You will be automatically redirected back to Thrico with status **CONNECTED**.
+</Step>
+</Steps>
+
+---
+
+## ⚙️ Post-Connection Setup
+
+### 1. Module & Field Mapping
+- Navigate to the **Field Mapping** tab:
+  - Select your primary sync object (**`Contacts`** or **`Leads`**).
+  - Map Zoho fields (`First_Name`, `Last_Name`, `Email`, `Phone`, `Account_Name`, custom picklists) to Thrico member profile fields.
+
+### 2. Initial Data Import
+- On the **Sync & History** tab, click **`⚡ Sync Now`** to trigger a full bulk import of existing Zoho contacts into your Thrico community.
+
+### 3. Real-Time Webhook Setup (Optional)
+To stream new Zoho contacts instantaneously into Thrico:
+1. In Zoho CRM &rarr; **Setup (⚙️) &rarr; Automation &rarr; Workflow Rules**.
+2. Click **Create Rule**:
+   - **Module**: `Contacts`
+   - **When**: *A record is Created or Edited*
+3. Under **Instant Actions**, choose **Webhook**:
+   - **URL**: `POST https://admin.thrico.app/integrations/crm/events`
+   - **Method**: `POST`
+4. Click **Save & Associate**.
+
+---
+
+## 🔒 Security & Data Specifications
+
+| Feature | Standard / Specification |
+| :--- | :--- |
+| **Authentication** | OAuth 2.0 with Offline Refresh Tokens |
+| **API Version** | Zoho CRM REST API V8 (`/crm/v8`) |
+| **Token Encryption** | AES-256 GCM Encryption at Rest |
+| **Transport** | TLS 1.3 End-to-End Encryption |
+
+---
+
+## ❓ Frequently Asked Questions (FAQ)
+
+<Accordions>
+<Accordion title="How do I resolve 'invalid_client' during Zoho connection?">
+Make sure the <b>Client ID</b> and <b>Client Secret</b> match the exact Zoho Data Center region (e.g. <code>api-console.zoho.in</code> vs <code>api-console.zoho.com</code>) where your Zoho CRM account was registered.
+</Accordion>
+
+<Accordion title="Does Thrico handle Zoho access token expiration?">
+Yes. Zoho access tokens expire after 1 hour. Thrico securely stores the <code>refresh_token</code> and automatically acquires fresh access tokens in the background with zero disruption.
+</Accordion>
+
+<Accordion title="Can I sync custom Zoho modules?">
+Yes. Thrico queries the Zoho V8 metadata endpoint to automatically discover all standard and custom modules created in your Zoho organization.
+</Accordion>
+</Accordions>
+
+---
+
+## 🔗 Related Resources
+
+<Cards>
+  <Card title="Salesforce Integration" href="/docs/integrations/salesforce" />
+  <Card title="Odoo CRM Integration" href="/docs/integrations/odoo" />
+  <Card title="CRM Hub Overview" href="/docs/integrations/crm" />
+</Cards>

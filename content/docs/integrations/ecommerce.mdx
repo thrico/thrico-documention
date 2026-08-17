@@ -1,0 +1,85 @@
+---
+title: E-Commerce Integrations
+description: Connect Shopify and WooCommerce stores to synchronize products, orders, customers, and inventory with your Thrico community.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+Thrico integrates with modern e-commerce engines to connect commerce with community. Turn customers into engaged community members, offer exclusive member discounts, and display verified buyer badges.
+
+```
+┌────────────────────────────────┐            ┌────────────────────────────────┐
+│      E-Commerce Platform       │            │        Thrico Platform         │
+│     (Shopify / WooCommerce)    │            │                                │
+│                                │            │                                │
+│  • Orders / Checkout Webhook   │ ─────────► │  • Verified Customer Badging   │
+│  • Customer Accounts           │ ─────────► │  • VIP & Tiered Community Auto │
+│  • Products & Collections      │ ─────────► │  • In-App Marketplace Sync     │
+│  • Inventory Level Events      │ ─────────► │  • Real-Time Stock Status      │
+└────────────────────────────────┘            └────────────────────────────────┘
+```
+
+---
+
+## Supported E-Commerce Platforms
+
+<Tabs items={["Shopify", "WooCommerce"]}>
+<Tab value="Shopify">
+### Shopify Integration
+
+Thrico supports official Shopify App connections with OAuth and webhook synchronization:
+
+1. In your **Thrico Dashboard**, go to **Settings &rarr; Integrations &rarr; E-Commerce**.
+2. Click **Connect Shopify**.
+3. Enter your myshopify store URL (e.g. `your-brand.myshopify.com`).
+4. Approve the required scopes:
+   - `read_products`, `read_orders`, `read_customers`, `read_inventory`
+5. Thrico automatically subscribes to Shopify webhooks:
+   - `customers/create`, `customers/update`
+   - `orders/create`, `orders/paid`, `orders/fulfilled`
+   - `products/create`, `products/update`, `products/delete`
+   - `inventory_levels/update`
+
+</Tab>
+<Tab value="WooCommerce">
+### WooCommerce Integration
+
+Connect your WordPress WooCommerce store using REST API keys:
+
+1. In WordPress Admin, navigate to **WooCommerce &rarr; Settings &rarr; Advanced &rarr; REST API**.
+2. Click **Add Key**, set description to `Thrico Integration`, and permissions to `Read/Write`.
+3. Copy the **Consumer Key** and **Consumer Secret**.
+4. In Thrico Dashboard:
+   - Enter your WordPress site URL: `https://yourstore.com`
+   - Enter `Consumer Key` and `Consumer Secret`.
+5. Webhooks are automatically configured for order and product synchronization.
+
+</Tab>
+</Tabs>
+
+---
+
+## Features & Benefits
+
+### 1. Automatic Customer Community Onboarding
+- Invite store customers into your community immediately after checkout.
+- Reward repeat buyers with exclusive community access and badges.
+
+### 2. Product Catalog Synchronization
+- Import products and collections directly into the Thrico Marketplace.
+- Keep pricing, variants, images, and inventory in sync automatically.
+
+### 3. Queue-Based Processing & Fault Tolerance
+All incoming Shopify and WooCommerce webhook events are published to dedicated RabbitMQ queues (`shopify.customer.sync`, `shopify.order.sync`, `woocommerce.order.sync`). In the event of network timeouts, jobs route to `shopify.dlq` or `woocommerce.dlq` for safe replay without data loss.
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card title="Marketplace Configuration" href="/docs/marketplace" />
+  <Card title="Salesforce Setup Guide" href="/docs/integrations/salesforce" />
+  <Card title="Webhooks & Events" href="/docs/integrations/webhooks" />
+</Cards>

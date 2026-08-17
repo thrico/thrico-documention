@@ -1,0 +1,95 @@
+---
+title: Single Sign-On (SSO) & Identity
+description: Configure enterprise authentication with SAML 2.0, OpenID Connect (OIDC), Google Workspace, Microsoft Entra ID (Azure AD), and Okta.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+Thrico provides enterprise Single Sign-On (SSO) allowing your community members and administrators to log in using their corporate identity provider (IdP). SSO eliminates password fatigue, centralizes access control, and enforces your organization's multi-factor authentication (MFA) policies.
+
+---
+
+## Supported Identity Providers
+
+| Identity Provider | Protocol | JIT (Just-In-Time) Provisioning | Group / Role Mapping |
+| :--- | :--- | :--- | :--- |
+| **Google Workspace** | OAuth 2.0 / OIDC | Yes | Domain & Org Unit |
+| **Microsoft Entra ID (Azure AD)** | SAML 2.0 / OIDC | Yes | Security Groups |
+| **Okta** | SAML 2.0 / OIDC | Yes | Okta Groups |
+| **Custom SAML 2.0** | SAML 2.0 | Yes | Custom Attributes |
+| **Custom OIDC** | OpenID Connect | Yes | JWT Claims |
+
+---
+
+## Setting Up SSO
+
+<Tabs items={["Google Workspace", "Microsoft Entra ID", "Okta", "Custom SAML 2.0"]}>
+<Tab value="Google Workspace">
+
+### Google Workspace (OAuth / OIDC)
+
+1. Open the [Google Cloud Console](https://console.cloud.google.com).
+2. Create an **OAuth 2.0 Client ID** under **APIs & Services &rarr; Credentials**.
+3. Application Type: **Web application**.
+4. Authorized Redirect URI:
+   ```text
+   https://api.yourdomain.com/auth/sso/google/callback
+   ```
+5. In Thrico Dashboard &rarr; **Settings &rarr; Security &rarr; SSO**:
+   - Paste **Client ID** and **Client Secret**.
+   - Specify allowed domains (e.g. `yourcompany.com`).
+
+</Tab>
+<Tab value="Microsoft Entra ID">
+
+### Microsoft Entra ID (Azure AD)
+
+1. In Microsoft Entra admin center, register a new Enterprise Application.
+2. Select **Single sign-on &rarr; SAML**.
+3. Set **Identifier (Entity ID)**: `https://api.yourdomain.com/auth/sso/saml/metadata`
+4. Set **Reply URL (ACS URL)**: `https://api.yourdomain.com/auth/sso/saml/acs`
+5. Download the **Federation Metadata XML** and upload it to Thrico.
+
+</Tab>
+<Tab value="Okta">
+
+### Okta SAML / OIDC
+
+1. In Okta Admin Console, click **Applications &rarr; Create App Integration**.
+2. Select **SAML 2.0**.
+3. Set **Single Sign-On URL**: `https://api.yourdomain.com/auth/sso/saml/acs`
+4. Set **Audience URI (SP Entity ID)**: `https://api.yourdomain.com/auth/sso/saml/metadata`
+5. Configure attribute statements: `email`, `firstName`, `lastName`, `department`.
+
+</Tab>
+<Tab value="Custom SAML 2.0">
+
+### Generic SAML 2.0 Configuration
+
+Provide the following endpoints to your IdP administrator:
+
+- **Entity ID / Issuer**: `https://api.yourdomain.com/auth/sso/saml/metadata`
+- **ACS URL (Assertion Consumer Service)**: `https://api.yourdomain.com/auth/sso/saml/acs`
+- **NameID Format**: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
+- **Binding**: `HTTP-POST`
+
+</Tab>
+</Tabs>
+
+---
+
+## Just-In-Time (JIT) Provisioning
+
+When JIT is enabled, users who authenticate successfully through your IdP for the first time will automatically have an account created in Thrico with their profile information mapped directly from the SAML assertions or OIDC ID Token claims.
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card title="Security & Compliance" href="/docs/security" />
+  <Card title="HR Hub Integration" href="/docs/integrations/hr-hub" />
+  <Card title="Salesforce Setup Guide" href="/docs/integrations/salesforce" />
+</Cards>

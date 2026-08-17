@@ -1,0 +1,171 @@
+---
+title: CRM Integrations (CRM Hub)
+description: Connect and synchronize contacts, leads, accounts, and custom fields across Salesforce, Zoho CRM, Odoo, and vTiger.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+Thrico's **CRM Hub** bridges your community platform with your organization's Customer Relationship Management (CRM) system. It keeps member profiles, company records, contact statuses, and engagement metrics synchronized in real time.
+
+```
+┌─────────────────┐       ┌───────────────────────────────┐       ┌─────────────────┐
+│                 │       │        Thrico CRM Hub         │       │                 │
+│   Salesforce    │ ◄───► │  • Schema Discovery Service   │ ◄───► │  Thrico Members │
+│   Zoho CRM      │       │  • Visual Mapping Engine      │       │  & Communities  │
+│   Odoo CRM      │       │  • Transformation Pipelines   │       │                 │
+│   vTiger        │       │  • Auto-Reconciliation Engine │       │                 │
+│                 │       └───────────────┬───────────────┘       │                 │
+└─────────────────┘                       │                       └─────────────────┘
+                                          ▼
+                              ┌───────────────────────┐
+                              │  RabbitMQ / DLQ Queue │
+                              └───────────────────────┘
+```
+
+---
+
+## Supported CRM Providers
+
+| Provider | Authentication Type | Supported Objects | Sync Capabilities |
+| :--- | :--- | :--- | :--- |
+| **Salesforce** | OAuth 2.0 (PKCE / Web Server Flow) | `Contact`, `Lead`, `Account`, Custom Objects | Bi-directional, Delta Sync, Bulk Sync |
+| **Zoho CRM** | OAuth 2.0 (Multi-DC: .com, .in, .eu) | `Contacts`, `Leads`, `Accounts`, Custom Modules | Bi-directional, Incremental Sync |
+| **Odoo CRM** | JSON-RPC / XML-RPC (API Key / Auth) | `res.partner`, `crm.lead` | Bi-directional, Real-time Sync |
+| **vTiger** | Challenge-Response / API Access Key | `Contacts`, `Accounts`, `Leads` | Inbound / Outbound Sync |
+
+---
+
+## Connecting a CRM Provider
+
+<Tabs items={["Salesforce", "Zoho CRM", "Odoo", "vTiger"]}>
+<Tab value="Salesforce">
+### Salesforce Connection
+
+Salesforce connects via OAuth 2.0. Follow the detailed [Salesforce Setup Guide](/docs/integrations/salesforce) for step-by-step instructions.
+
+```env title=".env"
+SALESFORCE_CLIENT_ID=your_salesforce_consumer_key
+SALESFORCE_CLIENT_SECRET=your_salesforce_consumer_secret
+```
+</Tab>
+
+<Tab value="Zoho CRM">
+### Zoho CRM Connection
+
+1. Navigate to **Zoho Developer Console** (`api-console.zoho.com`).
+2. Create a **Server-based Application**.
+3. Set your Redirect URI to:
+   ```text
+   https://api.yourdomain.com/integrations/crm/callback/zoho
+   ```
+4. Scopes required: `ZohoCRM.modules.ALL`, `ZohoCRM.settings.ALL`.
+5. Enter your **Client ID**, **Client Secret**, and select your Zoho Data Center region (`US`, `EU`, `IN`, `AU`, `CN`).
+
+</Tab>
+
+<Tab value="Odoo">
+### Odoo CRM Connection
+
+Connect using your Odoo instance credentials or API Key:
+
+```json
+{
+  "baseUrl": "https://your-company.odoo.com",
+  "databaseName": "production_db",
+  "username": "admin@yourcompany.com",
+  "apiKey": "your_odoo_api_key"
+}
+```
+
+</Tab>
+
+<Tab value="vTiger">
+### vTiger CRM Connection
+
+Connect using your vTiger URL, admin username, and user access key:
+
+```json
+{
+  "baseUrl": "https://your-instance.odoo.vtiger.com",
+  "username": "admin",
+  "accessKey": "your_vtiger_access_key"
+}
+```
+
+</Tab>
+</Tabs>
+
+---
+
+## Core Capabilities
+
+### 1. Dynamic Schema Discovery
+When a CRM is connected, Thrico queries the provider's metadata API to discover:
+- Standard objects and custom entities
+- Available fields, labels, and data types (`STRING`, `EMAIL`, `PHONE`, `PICKLIST`, `BOOLEAN`, `DATE`, `LOOKUP`)
+- Object relationships and reference lookups
+
+### 2. Field Mapping Engine
+Create flexible mapping rules between CRM fields and Thrico member profiles.
+
+```json title="Example Field Mapping Configuration"
+{
+  "sourceObject": "Contact",
+  "sourceField": "Department",
+  "targetType": "STANDARD",
+  "targetField": "department",
+  "syncDirection": "CRM_TO_THRICO",
+  "transformConfig": {
+    "type": "MAP",
+    "dictionary": {
+      "Eng": "Engineering",
+      "Mkt": "Marketing",
+      "Sales": "Commercial Operations"
+    },
+    "defaultValue": "General"
+  }
+}
+```
+
+#### Supported Field Transformations:
+- **Direct**: Exact value pass-through
+- **Map / Dictionary**: Transform external enum codes into human-readable values
+- **Date Formatting**: Convert between ISO 8601, Unix epoch, and custom date formats
+- **Case Formatting**: `UPPERCASE`, `LOWERCASE`, `TITLE_CASE`
+- **Boolean Flags**: Map truthy strings (`"yes"`, `"1"`, `"active"`) to boolean values
+
+---
+
+### 3. Rule-Based Community Assignments
+
+Automatically enroll CRM contacts into specific communities based on attributes:
+
+```
+IF Contact.AnnualRevenue > 50000 ──► Add to "Enterprise Customer Network"
+IF Contact.JobTitle CONTAINS "CTO" ──► Add to "Technology Leaders Forum"
+IF Contact.Status == "Inactive" ──► Remove from Private Channels
+```
+
+---
+
+### 4. Synchronization Engine & Reconciliation
+
+Thrico supports multiple sync triggers:
+- **Real-Time Webhooks**: External CRM changes are instantly posted to Thrico's ingest worker.
+- **Scheduled Delta Sync**: Runs every hour / day to pull records modified since `lastSyncTimestamp`.
+- **Full Reconciliation**: Compares all records between systems and resolves drift or discrepancies.
+- **Conflict Resolution Policies**: Choose `CRM_WINS`, `THRICO_WINS`, or `LATEST_TIMESTAMP_WINS`.
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card title="Salesforce Setup Guide" href="/docs/integrations/salesforce" />
+  <Card title="Zoho CRM Setup Guide" href="/docs/integrations/zoho" />
+  <Card title="Odoo 19 Setup Guide" href="/docs/integrations/odoo" />
+  <Card title="HR Hub Integration" href="/docs/integrations/hr-hub" />
+  <Card title="Webhooks API" href="/docs/integrations/webhooks" />
+</Cards>

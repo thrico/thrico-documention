@@ -1,0 +1,91 @@
+---
+title: Integrations Overview
+description: Connect Thrico with your existing CRMs, HR platforms, e-commerce stores, SSO providers, and custom workflows.
+---
+
+## Overview
+
+Thrico provides an enterprise-grade integration framework designed to connect your community ecosystem with external business systems in real-time. Whether syncing members from your **CRM**, provisioning employees from your **HRIS**, streaming orders from your **E-Commerce** store, or triggering automated webhooks, Thrico ensures seamless bi-directional data flow.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                          Thrico Platform                               │
+│                                                                        │
+│   ┌───────────────┐     ┌─────────────────────┐     ┌──────────────┐   │
+│   │ Communities   │ ──► │ Integration Worker  │ ◄── │  Event Bus   │   │
+│   │ & Members     │     │ (RabbitMQ + DLQ)    │     │  (Webhooks)  │   │
+│   └───────▲───────┘     └──────────┬──────────┘     └───────▲──────┘   │
+└───────────┼────────────────────────┼────────────────────────┼──────────┘
+            │                        │                        │
+            ▼                        ▼                        ▼
+┌───────────────────────┐ ┌────────────────────┐ ┌──────────────────────┐
+│       CRM Hub         │ │      HR Hub        │ │     E-Commerce       │
+│ • Salesforce          │ │ • Workday          │ │ • Shopify            │
+│ • Zoho CRM            │ │ • SAP SuccessFact. │ │ • WooCommerce        │
+│ • Odoo                │ │ • Darwinbox / Keka │ │                      │
+│ • vTiger              │ │ • greytHR / Oracle │ │                      │
+└───────────────────────┘ └────────────────────┘ └──────────────────────┘
+```
+
+## Integration Categories
+
+<Cards>
+  <Card
+    title="Salesforce Setup Guide"
+    href="/docs/integrations/salesforce"
+    description="Step-by-step guide to get Salesforce API keys (Consumer Key & Secret) and connect to Thrico."
+  />
+  <Card
+    title="Zoho CRM Setup Guide"
+    href="/docs/integrations/zoho"
+    description="Step-by-step guide to connect Zoho CRM across Global, India, EU, and AU data centers."
+  />
+  <Card
+    title="Odoo 19 Setup Guide"
+    href="/docs/integrations/odoo"
+    description="Step-by-step guide to connect Odoo 19 Cloud SaaS, Odoo.sh, or Self-Hosted via JSON-2 API keys."
+  />
+  <Card
+    title="CRM Integrations"
+    href="/docs/integrations/crm"
+    description="Sync contacts, accounts, and custom fields across Salesforce, Zoho, Odoo, and vTiger."
+  />
+  <Card
+    title="HR & People Systems (HR Hub)"
+    href="/docs/integrations/hr-hub"
+    description="Automated employee sync, onboarding, offboarding, and rule-based community assignment."
+  />
+  <Card
+    title="E-Commerce"
+    href="/docs/integrations/ecommerce"
+    description="Sync products, customer purchase history, and orders with Shopify and WooCommerce."
+  />
+  <Card
+    title="Single Sign-On (SSO)"
+    href="/docs/integrations/sso"
+    description="Enterprise authentication with SAML 2.0, OIDC, Google Workspace, Azure AD, and Okta."
+  />
+  <Card
+    title="Webhooks & Events"
+    href="/docs/integrations/webhooks"
+    description="Real-time event subscriptions with HMAC-SHA256 signatures, retry policies, and dead-letter queues."
+  />
+</Cards>
+
+---
+
+## Core Architecture & Capabilities
+
+### 1. Schema Discovery Engine
+Every external system has distinct standard and custom fields. Thrico dynamically discovers your external schema (e.g. Salesforce Objects, Zoho Modules, Workday Worker profiles) and makes all custom fields available in the Thrico Mapping Engine.
+
+### 2. Bi-Directional & Uni-Directional Sync
+- **CRM to Thrico**: Keep member profiles up-to-date with CRM contact stages, membership tiers, and lifecycle changes.
+- **Thrico to CRM**: Stream member engagement data, event attendance, and community contributions back to your CRM.
+- **Scheduled & Real-Time Sync**: Instant webhook-driven triggers alongside automated cron-based bulk reconciliation.
+
+### 3. Reliable Message Queue & Dead-Letter Queues (DLQ)
+All synchronization jobs run through dedicated RabbitMQ queues managed by the `integration-worker` service. If an external API encounters rate limits or temporary outages, jobs are automatically retried with exponential backoff and routed to a durable Dead-Letter Queue (DLQ) with audit logs for safe replay.
+
+### 4. Rule-Based Community Assignments
+Define automated membership rules based on external attributes (e.g., `Department == "Engineering"`, `Tier == "Enterprise"`, or `Region == "EMEA"`) so members are instantly placed into relevant private groups, spaces, and discussion channels upon sync.

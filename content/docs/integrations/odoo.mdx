@@ -1,0 +1,154 @@
+---
+title: How to Connect Thrico to Odoo CRM
+description: Step-by-step administrator guide to integrate Odoo 19 (Cloud, Odoo.sh, and Self-Hosted) with Thrico via the JSON-2 External API and API Keys.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+The Thrico-Odoo integration connects your Odoo ERP and CRM modules (`res.partner`, `crm.lead`, `res.company`) directly with your Thrico community directory using Odoo's secure **JSON-2 External API**.
+
+---
+
+## 🌟 Overview
+
+Connecting Odoo to Thrico allows automatic synchronization of customer and partner accounts, custom field mapping, and rule-based community membership.
+
+### Key Capabilities:
+- ⚡ **Direct API Key Authentication**: No complex OAuth redirect flows required—connect in seconds using a Developer API Key.
+- 🔄 **Odoo 19 JSON-2 RPC Support**: Native support for Odoo 19 Cloud SaaS, Odoo.sh, and self-hosted instances.
+- 🏷️ **Dynamic Model & Field Discovery**: Automatically indexes contacts, companies, leads, and custom `x_*` attributes.
+- 🛡️ **Encrypted Credential Storage**: API Keys are encrypted at rest using AES-256 GCM.
+
+---
+
+## 📋 Prerequisites
+
+Before connecting, make sure you have:
+1. An **Odoo 19 / 18 instance** (e.g. `https://yourcompany.odoo.com` or custom domain).
+2. An active **Odoo User Account** with Administrator or CRM access permissions.
+3. Access to your **Thrico Admin Dashboard** (`https://admin.thrico.app`).
+
+---
+
+## 🚀 Step-by-Step Connection Guide
+
+<Steps>
+<Step>
+### Step 1: Generate a Developer API Key in Odoo
+
+1. Log in to your Odoo instance (e.g. `https://yourcompany.odoo.com`).
+2. Click your **User Avatar / Profile Name** in the top-right header &rarr; select **Preferences** (or *My Profile*).
+3. Switch to the **Account Security** tab.
+4. In the **Developer API Keys** section, click **`[ New API Key ]`**.
+5. In the confirmation dialog:
+   - **Key Description**: `Thrico CRM Integration`
+   - Enter your Odoo account login password to authorize key generation.
+6. Click **Generate Key**.
+7. 🔑 **Copy the generated API Key** *(e.g. `2a6f8b9e...`)*.
+
+<Callout type="warn">
+  Odoo only displays the API Key once. Copy and save it securely. Do NOT use your regular login password in place of the API Key.
+</Callout>
+</Step>
+
+<Step>
+### Step 2: Find Your Database Name
+
+<Tabs items={["Odoo Online Cloud (*.odoo.com)", "Odoo.sh / Custom Domain / Self-Hosted"]}>
+  <Tab value="Odoo Online Cloud (*.odoo.com)">
+Your database name is simply your **subdomain**:
+- If your URL is `https://acmecorp.odoo.com`, your database name is:
+```text
+acmecorp
+```
+  </Tab>
+  <Tab value="Odoo.sh / Custom Domain / Self-Hosted">
+1. Open your browser and navigate to:
+```text
+https://your-odoo-domain.com/web/database/manager
+```
+2. Check your active database selector screen to find the exact database name (e.g. `production_db`).
+  </Tab>
+</Tabs>
+</Step>
+
+<Step>
+### Step 3: Connect from the Thrico Admin Dashboard
+
+1. Open your **Thrico Dashboard** &rarr; navigate to:
+   ```text
+   https://admin.thrico.app/settings/integrations/crm
+   ```
+2. Locate the **Odoo CRM** card and click **`Connect Odoo`**.
+3. In the connection dialog, enter:
+   - **Instance URL**: `https://yourcompany.odoo.com`
+   - **Database Name**: `yourcompany`
+   - **API Key**: `<PASTE_YOUR_DEVELOPER_API_KEY>`
+4. Click **`Test & Connect`**.
+5. Thrico will validate the credentials against Odoo's JSON-2 endpoint, discover models (`res.partner`, `crm.lead`), and mark the card as **CONNECTED**.
+</Step>
+</Steps>
+
+---
+
+## ⚙️ Post-Connection Setup
+
+### 1. Model & Field Mapping
+- Navigate to the **Field Mapping** tab:
+  - Default primary object: **`Contact / Customer (res.partner)`**.
+  - Map Odoo standard fields (`name`, `email`, `phone`, `parent_id`, `function`) and custom attributes (`x_membership_tier`, `x_points`) to Thrico member profiles.
+
+### 2. Initial Data Import
+- On the **Sync & History** tab, click **`⚡ Sync Now`** to trigger the initial bulk import of all existing Odoo partners into your community.
+
+### 3. Real-Time Webhook Notification (Optional)
+To stream new Odoo contacts instantaneously into Thrico:
+1. In Odoo &rarr; **Settings** &rarr; activate **Developer Mode**.
+2. Go to **Technical &rarr; Automation &rarr; Automated Actions**.
+3. Create a rule for `res.partner` on **Record Creation & Update** with action **Send Webhook** to:
+```text
+POST https://admin.thrico.app/integrations/crm/events
+```
+
+---
+
+## 🔒 Security & Data Specifications
+
+| Feature | Standard / Specification |
+| :--- | :--- |
+| **API Protocol** | Odoo 19 REST JSON-2 RPC (`/json/2/<model>/<method>`) |
+| **Authentication** | Bearer Token (Developer API Key) |
+| **Transport** | TLS 1.3 End-to-End Encryption |
+| **Storage Security** | AES-256 GCM Encrypted Credentials |
+
+---
+
+## ❓ Frequently Asked Questions (FAQ)
+
+<Accordions>
+<Accordion title="How do I fix '401 Unauthorized: Invalid apikey'?">
+This error occurs if you entered your account password instead of generating a <b>Developer API Key</b>. Go to <i>User Profile &rarr; Preferences &rarr; Account Security &rarr; Developer API Keys &rarr; New API Key</i> and copy the generated key.
+</Accordion>
+
+<Accordion title="Does Thrico support custom Odoo modules and x_ fields?">
+Yes. Thrico automatically queries Odoo's <code>ir.model.fields</code> metadata service to discover all custom fields starting with <code>x_</code> as well as any installed third-party modules.
+</Accordion>
+
+<Accordion title="Can I sync both Companies and Individual Contacts?">
+Yes. Odoo represents both as <code>res.partner</code>. Thrico automatically associates individual contacts with their parent company account via the <code>parent_id</code> relationship.
+</Accordion>
+</Accordions>
+
+---
+
+## 🔗 Related Resources
+
+<Cards>
+  <Card title="Salesforce Integration" href="/docs/integrations/salesforce" />
+  <Card title="CRM Hub Overview" href="/docs/integrations/crm" />
+  <Card title="Webhooks Reference" href="/docs/integrations/webhooks" />
+</Cards>

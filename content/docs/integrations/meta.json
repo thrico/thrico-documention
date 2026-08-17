@@ -1,0 +1,14 @@
+{
+  "title": "Integrations",
+  "pages": [
+    "index",
+    "salesforce",
+    "zoho",
+    "odoo",
+    "crm",
+    "hr-hub",
+    "ecommerce",
+    "sso",
+    "webhooks"
+  ]
+}

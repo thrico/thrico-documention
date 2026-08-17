@@ -1,0 +1,165 @@
+---
+title: HR & People Systems (HR Hub)
+description: Connect enterprise HRIS and People platforms (Workday, SAP SuccessFactors, Oracle HCM, Darwinbox, Keka, greytHR, PeopleStrong) to automate member provisioning, organization hierarchies, and role-based community rules.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+## Overview
+
+Thrico's **HR Hub** connects enterprise Human Resource Information Systems (HRIS) and Human Capital Management (HCM) software directly with your Thrico entity. It automates employee onboarding, team assignment, title updates, department transfers, and offboarding workflows.
+
+```
+┌────────────────────────────────────────────────────────┐
+│                   Enterprise HRIS                      │
+│   Workday • SAP SuccessFactors • Oracle HCM • Darwinbox │
+│             Keka • greytHR • PeopleStrong              │
+└───────────────────────────┬────────────────────────────┘
+                            │ (Scheduled Sync / Webhooks)
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│                     Thrico HR Hub                      │
+│   • Connector Registry & Multi-Tenant Authentication   │
+│   • Employee Delta Ingest & Normalization Pipeline     │
+│   • Automated Community Assignment Rules Engine        │
+│   • Lifecycle Hooks (Hire, Promotion, Termination)     │
+└───────────────────────────┬────────────────────────────┘
+                            │
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│                  Thrico Communities                    │
+│   • Engineering Space (Auto-enrolled via Department)   │
+│   • EMEA Regional Hub (Auto-enrolled via Location)     │
+│   • Leadership Circle (Auto-enrolled via Level/Band)   │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Supported HR Connectors
+
+| Platform | Auth Type | Employee Data Sync | Department & Org Hierarchy |
+| :--- | :--- | :--- | :--- |
+| **Workday** | RaaS / OAuth 2.0 / ISU | Full Worker Profile | Organizations, Supervisory Orgs |
+| **SAP SuccessFactors** | OAuth 2.0 / SAML Bearer / OData | User & EmpEmployment | Business Units, Divisions |
+| **Oracle HCM Cloud** | REST API / Basic Auth | Workers & Assignments | Business Units, Jobs, Locations |
+| **Darwinbox** | API Key & Tenant Secret | Employee Master | Departments, Designations |
+| **Keka** | OAuth 2.0 / API Key | Employee Directory | Departments, Groups, Locations |
+| **greytHR** | API Token & Domain Auth | Employee Details | Branches, Categories, Designations |
+| **PeopleStrong** | OAuth 2.0 / REST Credentials | Employee Records | Roles, Cost Centers, Hierarchy |
+
+---
+
+## Configuration & Credentials
+
+<Tabs items={["Workday", "SAP SuccessFactors", "Keka / Darwinbox", "greytHR / PeopleStrong"]}>
+<Tab value="Workday">
+### Workday Integration
+
+Configure Workday using an **Integration System User (ISU)** or **Report-as-a-Service (RaaS)** endpoint:
+
+```json
+{
+  "provider": "WORKDAY",
+  "baseUrl": "https://wd3-impl-services1.workday.com/ccx/service/customreport2/your_tenant",
+  "username": "ISU_Thrico_Sync",
+  "apiKey": "your_workday_password_or_token",
+  "tenantName": "your_tenant_id"
+}
+```
+
+</Tab>
+<Tab value="SAP SuccessFactors">
+### SAP SuccessFactors
+
+Connect using the SuccessFactors OData API with OAuth 2.0 client credentials:
+
+```json
+{
+  "provider": "SAP_SUCCESSFACTORS",
+  "baseUrl": "https://api12preview.sapsf.eu/odata/v2",
+  "clientId": "your_oauth_client_id",
+  "clientSecret": "your_oauth_client_secret",
+  "tenantName": "SF_COMPANY_ID"
+}
+```
+
+</Tab>
+<Tab value="Keka / Darwinbox">
+### Keka & Darwinbox
+
+Connect via REST API keys provided in your administrator settings:
+
+```json
+{
+  "provider": "KEKA",
+  "baseUrl": "https://yourorg.keka.com/api/v1",
+  "apiKey": "keka_live_api_key_xxxxxxxx",
+  "clientId": "keka_client_id"
+}
+```
+
+</Tab>
+<Tab value="greytHR / PeopleStrong">
+### greytHR & PeopleStrong
+
+Provide your domain endpoint and secret token:
+
+```json
+{
+  "provider": "GREYTHR",
+  "baseUrl": "https://yourcompany.greythr.com/api",
+  "apiKey": "your_greythr_token"
+}
+```
+
+</Tab>
+</Tabs>
+
+---
+
+## Employee Lifecycle Automation
+
+### 1. Automated Onboarding (Hire)
+When a new employee record is created in your HRIS:
+- Thrico automatically creates the member profile.
+- Maps custom fields (e.g. Employee ID, Department, Designation, Manager, Date of Joining).
+- Sends a personalized welcome invitation email or enables instant SSO login.
+
+### 2. Department & Role Transitions
+When an employee changes department or gets promoted:
+- Thrico evaluates **Community Rules** and automatically adjusts group memberships.
+- Updates badges, directory cards, and notification settings.
+
+### 3. Offboarding & Deactivation
+When an employee status is updated to `Terminated` or `Resigned` in HRIS:
+- Thrico automatically suspends or archives the member account.
+- Revokes access to private groups and sensitive community channels.
+- Preserves historical knowledge base posts while anonymizing credentials if required.
+
+---
+
+## Community Assignment Rules
+
+Define dynamic conditions to keep group memberships updated without manual intervention:
+
+```
+RULE 1: IF employee.department == "Engineering" 
+        THEN add_to_community("Engineering Hub")
+
+RULE 2: IF employee.location == "London" 
+        THEN add_to_community("UK Team Space")
+
+RULE 3: IF employee.is_manager == true 
+        THEN add_to_community("People Managers Circle")
+```
+
+---
+
+## Next Steps
+
+<Cards>
+  <Card title="Salesforce Setup Guide" href="/docs/integrations/salesforce" />
+  <Card title="Single Sign-On (SSO)" href="/docs/integrations/sso" />
+  <Card title="Webhooks & Events" href="/docs/integrations/webhooks" />
+</Cards>
