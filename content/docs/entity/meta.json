@@ -1,4 +1,14 @@
 {
   "title": "Entity Management",
-  "pages": ["index", "register-entity", "edit-entity", "delete-entity", "branding", "domains", "packages", "billing"]
+  "pages": [
+    "index",
+    "register-entity",
+    "edit-entity",
+    "delete-entity",
+    "branding",
+    "domains",
+    "modules",
+    "packages",
+    "billing"
+  ]
 }

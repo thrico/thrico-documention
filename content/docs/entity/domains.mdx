@@ -1,48 +1,61 @@
 ---
-title: "Domains"
-description: "Learn how to domains on the Thrico platform."
+title: Custom Domains
+description: Connect custom branded domains to your platform workspace with automated DNS verification and Let's Encrypt TLS/SSL provisioning.
 ---
+
+# Custom Domains
 
 ## Overview
 
-This guide covers how to **domains** in Thrico.
+The **Domains Management** panel (`/settings/domains`) allows you to connect your own branded web address (e.g., `community.yourbrand.com` or `yourbrand.com`) to your platform workspace, replacing the default `*.thrico.app` subdomain with automated TLS/SSL certificate provisioning.
 
-## Prerequisites
+---
 
-- **Entity Admin** or **Super Admin** role
-- Access to the Thrico dashboard
+## How to Set Up a Custom Domain
 
-## Navigation
+### Step 1: Access Domain Settings
+1. In the left sidebar, navigate to **Settings** → **Domains** (`/settings/domains`).
+2. You will see your default workspace address (e.g., `your-workspace.thrico.app`).
 
-```
-Dashboard → Entity → Domains
-```
+---
 
-## Step-by-Step Instructions
+### Step 2: Add Your Custom Domain
+1. Click the **Add Custom Domain** button in the top action bar.
+2. Enter your domain name:
+   - **Subdomain (Recommended)**: `community.yourbrand.com`, `hub.yourbrand.com`, `portal.yourbrand.com`
+   - **Apex / Root Domain**: `yourbrand.com`
+3. Click **Continue / Save**. You will be redirected to the DNS Verification page (`/settings/domains/[id]`).
 
-### Step 1: Access the Entity Section
+---
 
-Navigate to the **Entity** section from the sidebar menu.
+### Step 3: Configure DNS Records at Your Domain Registrar
+Log in to your DNS provider (e.g., *GoDaddy, Cloudflare, Namecheap, AWS Route 53, Google Domains*) and add the records shown on the screen:
 
-### Step 2: Follow the Prompts
+#### For Subdomains (e.g., `community.yourbrand.com`):
+| Record Type | Host / Name | Target / Value | TTL |
+| :--- | :--- | :--- | :--- |
+| **CNAME** | `community` | `cname.thrico.app` (or as specified in console) | Automatic / 300 |
 
-Complete the required fields and configuration options.
+#### For Root / Apex Domains (e.g., `yourbrand.com`):
+| Record Type | Host / Name | Target / Value | TTL |
+| :--- | :--- | :--- | :--- |
+| **A** | `@` | *Designated Thrico IP Address* | Automatic / 300 |
+| **CNAME** | `www` | `cname.thrico.app` | Automatic / 300 |
 
-### Step 3: Save Changes
+---
 
-Review your changes and click **Save** to apply.
+### Step 4: Verify DNS & Provision Automated SSL
+1. Return to the Domain Detail page in your dashboard.
+2. Click **Verify DNS Records**.
+3. Once DNS propagation is detected (typically 2–30 minutes), the system will automatically:
+   - Validate domain ownership.
+   - Issue an automated **Let's Encrypt TLS/SSL Certificate**.
+   - Enable HTTPS redirection.
+4. The status badge will change from **Pending Verification** to **Active / Secured**.
 
-## Result
+---
 
-Your changes will be applied immediately and reflected across the platform.
+## Managing & Removing Domains
 
-## Troubleshooting
-
-<Callout type="warn">
-  If you encounter issues, check that you have the required permissions and that all required fields are completed.
-</Callout>
-
-## Related Articles
-
-- [Entity Management Overview](/docs/entity)
-- [Quick Start Guide](/docs/getting-started/quick-start)
+- **Check SSL Status**: Click **Check SSL** to verify certificate validity, expiry, and auto-renewal schedules.
+- **Delete / Disconnect Domain**: Click the **Delete Domain** button to unbind the custom address and revert back to your default system subdomain.
