@@ -1,0 +1,99 @@
+---
+title: Impact Score Engine
+description: Algorithmic reputation and influence system evaluating member value, contribution quality, trust, and consistency.
+---
+
+# Impact Score Engine
+
+## Overview & Philosophy
+
+The **Impact Score Engine** is an algorithmic reputation and influence system designed to evaluate genuine member value and participation quality within your community. 
+
+Unlike traditional points (which measure simple quantity), the **Impact Score** combines multi-category contributions, trust levels, network activity, consistency, and decay algorithms to produce a holistic score for each member.
+
+---
+
+## Architecture & Sub-Modules
+
+| Route | Sub-Module | Purpose & Functionality |
+| :--- | :--- | :--- |
+| `/gamification/impact-score` | **Impact Overview** | High-level analytics, score distributions, and active template configuration. |
+| `/gamification/impact-score/rules` | **Scoring Rules** | Define, edit, and manage multi-category point allocation rules and formulas. |
+| `/gamification/impact-score/rules/create` | **Create Impact Rule** | Builder for new action-based impact triggers and calculations. |
+| `/gamification/impact-score/members` | **Member Scores** | Directory of member scores, category breakdowns, and percentile rankings. |
+| `/gamification/impact-score/activity-log` | **Activity Stream** | Real-time log of member events generating impact points. |
+| `/gamification/impact-score/audit-log` | **Audit Log** | Administrative history tracking formula modifications and manual overrides. |
+| `/gamification/impact-score/settings` | **Algorithm Settings** | Decay rates, recalculation schedules, baseline formulas, and thresholds. |
+| `/gamification/impact-score/documentation` | **How It Works** | Reference guide explaining algorithmic fairness and scoring mechanisms. |
+
+---
+
+## The 5 Core Impact Categories
+
+Every action and rule in the Impact Engine is categorized into one of five standard pillars:
+
+| Category | Icon / Focus | Typical Triggers & Actions |
+| :--- | :--- | :--- |
+| **Engagement** | 💬 *Discussions & Interaction* | Forum replies, chat participation, upvoting, reacting to content. |
+| **Contribution** | 🔥 *High-Value Creation* | Publishing articles, authoring guides, answering questions, verified solutions. |
+| **Trust & Safety** | 🛡️ *Reputation & Moderation* | ID verification, peer vouches, moderation assistance, zero infraction history. |
+| **Network & Referrals**| 👥 *Community Growth* | Successful member invites, follower milestones, peer mentorships. |
+| **Consistency** | 🧭 *Retention & Habit* | Daily login streaks, regular weekly event attendance, recurring visits. |
+
+---
+
+## Creating & Editing Impact Rules
+
+### Step 1: Navigate to Rules
+1. Go to **Gamification** → **Impact Score** → **Rules**.
+2. Click **Create Rule** (`/gamification/impact-score/rules/create`).
+
+### Step 2: Configure Rule Parameters
+- **Source & Origin**:
+  - Select between **Core Module** (Community, Courses, Events, Store) or **Integration** (Shopify, Discord, Slack, CRM).
+- **Trigger Event / Action**:
+  - Select the specific event trigger (e.g., `post_accepted_answer`, `article_published`, `invite_converted`).
+- **Category Assignment**:
+  - Assign to one of the 5 Impact Categories (*Engagement, Contribution, Trust, Network, Consistency*).
+- **Impact Point Weighting**:
+  - Set the score delta. Supports both **positive** rewards (e.g., `+25`, `+100`) and **negative** penalties (e.g., `-50` for moderation flags), ranging from `-1000` to `+1000`.
+- **Dynamic Calculation Formula (Optional)**:
+  - Apply custom formulas or multipliers based on event metadata (e.g., `base * word_count_factor` or `likes * 1.5`).
+- **Daily Cap / Frequency Limits**:
+  - Set the maximum impact points a user can accumulate from this specific rule within a single day.
+- **Description**:
+  - Provide an internal explanation for administrator reference.
+
+### Step 3: Save & Activate
+Click **Save Rule** in the bottom floating panel. The rule immediately applies to new incoming events.
+
+---
+
+## Member Impact Directory
+
+The **Member Scores** section provides complete transparency into community member rankings:
+- **Impact Score**: Total calculated impact rating.
+- **Category Breakdown Radar/Bars**: Percentage contribution from each of the 5 categories (e.g., 40% Contribution, 30% Engagement, 20% Trust, 10% Consistency).
+- **Trend Indicator**: Upward or downward score trajectory over 7, 30, and 90 days.
+- **Member Inspection**: Click any member to inspect their complete transaction and scoring history.
+
+---
+
+## Activity & Audit Logs
+
+### Activity Log
+- Live event stream recording every member action that triggered an impact rule.
+- Displays Timestamp, Member, Action, Module, Points Delta (`+` or `-`), and Category tag.
+- Searchable by user handle, module, or date range.
+
+### Audit Log
+- Administrative record tracking changes made to impact rules, templates, and formulas.
+- Details Admin Name, Modified Rule/Setting, Old Value vs New Value, and Timestamp to ensure governance.
+
+---
+
+## Templates & Algorithm Settings
+
+- **Active Template**: Switch between predefined scoring models (e.g., *Community Heavy*, *Creator Focused*, *Learning First*).
+- **Score Decay (Inactivity Penalty)**: Optional periodic decay model where inactive members gradually lose non-permanent engagement scores, keeping leaderboards fresh and dynamic.
+- **Score Normalization**: Normalize raw points onto a standard 0–1,000 or 0–100 scale for consistent presentation across platforms.

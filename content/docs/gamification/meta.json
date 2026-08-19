@@ -1,4 +1,13 @@
 {
   "title": "Gamification",
-  "pages": ["index", "points", "badges", "ranks", "rewards", "leaderboards"]
+  "pages": [
+    "index",
+    "points-and-badges",
+    "leaderboards",
+    "currency",
+    "energies",
+    "games",
+    "rewards",
+    "impact-score"
+  ]
 }

@@ -1,0 +1,82 @@
+---
+title: Virtual Currency & Economy
+description: Manage internal tokenomics, custom branded currencies, point-to-currency conversion ratios, anti-abuse guardrails, member wallets, and transaction ledgers.
+---
+
+# Virtual Currency & Economy
+
+## Overview & System Purpose
+
+The **Virtual Currency Subsystem** (`/gamification/currency/*`) manages the internal tokenomics of your community ecosystem. It enables administrators to define custom branded currency (e.g., *Coins, Gems, Credits, Tokens*), set conversion rates between raw gamification points and spendable currency, implement anti-fraud guardrails, and audit member wallets and ledgers.
+
+---
+
+## Architecture & Sub-Module Map
+
+| Route | Section | Core Purpose & Functionality |
+| :--- | :--- | :--- |
+| `/gamification/currency` | **Currency Overview** | Macro analytics, minting/burn charts, currency velocity, and circulation volume. |
+| `/gamification/currency/economics` | **Economic Configuration** | Currency branding, point-to-currency normalization factors, and conversion simulators. |
+| `/gamification/currency/risk` | **Anti-Abuse Guardrails** | Inflation controls, daily/monthly earning caps, and maximum community reserve limits. |
+| `/gamification/currency/member-wallet` | **Member Wallets** | Directory of member balances, lifetime earnings, spending records, and transaction ledgers. |
+| `/gamification/currency/trace` | **Quick Trace** | Real-time audit tool to inspect specific transactions, conversions, and mint events. |
+| `/gamification/currency/audit-log` | **Audit History** | Immutable history of economic rule modifications and administrative changes. |
+
+---
+
+## Economic Configuration (`/economics`)
+
+### Custom Branding
+- **Currency Name**: Choose a custom name that fits your brand identity (e.g., *Credits, Coins, Gems, Stars, Tokens, Points*).
+- **Display Icon & Symbol**: Visual asset representing your digital currency in user wallets, rewards stores, and leaderboards.
+
+### Normalization & Conversion Ratio
+- **Normalization Factor**: Defines the exchange rate from raw gamification points to spendable currency tokens.
+  - *Example*: A normalization factor of `100` means **100 Points = 1 Currency Coin**.
+- **Conversion Presets**: Quick selectors for ratios (`1:1`, `10:1`, `50:1`, `100:1`, `500:1`).
+- **Live Simulator**: Built-in interactive calculator to test how raw points convert to spendable currency before saving changes.
+
+---
+
+## Risk Management & Anti-Abuse (`/risk`)
+
+Prevent runaway inflation, bot exploitation, and economic abuse by enforcing automated guardrails:
+
+| Guardrail Setting | Description & Protection |
+| :--- | :--- |
+| **Max Currency Per Member / Day** | The maximum allowable currency a single member can accumulate within 24 hours. |
+| **Max Currency Per Member / Month** | The monthly accumulation cap preventing outlier exploitation. |
+| **Max Global Entity Reserve** | Total ecosystem ceiling on circulating currency supply. |
+| **Redemption Rate Limit** | Frequency throttling on reward shop redemptions. |
+
+---
+
+## Member Wallet Directory (`/member-wallet`)
+
+The **Member Wallet** dashboard provides visibility into individual accounts across the platform:
+
+- **Search & Filtering**: Search members by name, email, or wallet ID.
+- **Balance Insights**:
+  - **Current Spendable Balance**: Real-time balance available for rewards and redemptions.
+  - **Lifetime Earned**: Total historical currency minted for the member.
+  - **Lifetime Spent / Burned**: Total currency exchanged in the rewards marketplace.
+- **Transaction Ledger Modal**:
+  - Click the **History** icon on any member row to open the complete itemized transaction ledger.
+  - Displays timestamps, source actions, delta (`+` or `-`), transaction IDs, and reference triggers.
+
+---
+
+## Quick Trace & Auditing (`/trace` & `/audit-log`)
+
+### Quick Trace (`/trace`)
+- Search any transaction ID, event hash, or user ID to instantly trace:
+  - Timestamp of event execution.
+  - Triggering action and origin module.
+  - Conversion rate applied at the time of the transaction.
+  - Pre-transaction balance vs post-transaction balance.
+
+### Audit Log (`/audit-log`)
+- Complete compliance log capturing:
+  - Changes to currency name or conversion factors.
+  - Modifications to risk caps and daily limits.
+  - Administrative manual adjustments or re-seed operations.

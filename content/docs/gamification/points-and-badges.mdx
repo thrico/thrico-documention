@@ -1,0 +1,221 @@
+---
+title: Points & Badges
+description: Configure point scoring rules, achievement badges, ranks progression, and community leaderboards.
+---
+
+# Points Engine & Scoring Rules
+
+## Overview
+
+The **Points Engine** allows community administrators to award points to members for taking meaningful actions across modules and third-party integrations. These rules define point rewards, safety caps against inflation, member eligibility criteria, and automatic notifications.
+
+---
+
+## Creating a Point Rule
+
+### Step 1: Open the Creation Page
+1. From the dashboard sidebar, navigate to **Gamification** → **Points & Badges**.
+2. Click the **Points** tab or navigate directly to the Points Manager.
+3. Click the **Add Rule** button in the top-right corner.
+
+---
+
+### Step 2: Configure Origin & Action Triggers
+- **Origin Source**: Select whether the action comes from an internal **Core Module** (e.g., Community, Courses, Events) or an external **Integration** (e.g., Shopify, Discord, Slack).
+- **Module / App**: Select the specific module or integrated app.
+- **Action Identifier**: Select or enter the specific event (e.g., `create_post`, `complete_lesson`, `attend_event`, `purchase_product`).
+- **Trigger Type**:
+  - **One-Off / First Time**: Points are awarded only once when a member completes the action for the very first time.
+  - **Recurring**: Points are awarded every single time the member completes the action.
+  - **Milestone**: Points are awarded when reaching cumulative milestones or streak counts.
+
+---
+
+### Step 3: Set Point Values & Economic Caps
+- **Point Value**: Specify how many points the member receives upon completion (e.g., `5`, `10`, `25`, `50`, `100`, or a custom value).
+- **Description**: Add a summary explaining the purpose and intent of this rule for administrative records.
+- **Earning Limits (Frequency Caps)**:
+  - **Daily Cap**: The maximum number of points a single member can earn from this rule within 24 hours.
+  - **Weekly Cap**: The maximum points per week.
+  - **Monthly Cap**: The maximum points per month.
+  - *Note: Leave caps blank or set to 0 for unlimited earning.*
+
+---
+
+### Step 4: Define Member Eligibility
+Control which members can earn points through this rule:
+- **All Members**: Open to everyone in the community.
+- **Specific Membership Tiers**: Restrict earning only to members belonging to specific tiers (e.g., Gold, VIP, Founding Members).
+- **Specific User Segments**: Restrict earning to selected individual users or test groups.
+
+---
+
+### Step 5: Automated Notifications (Optional)
+Configure immediate alerts sent to members when they earn points from this rule:
+- **Push Notifications**:
+  - Enable/disable push alerts.
+  - Set custom Title and Message Body.
+- **Email Notifications**:
+  - Enable/disable email alerts.
+  - Set custom Email Subject and Message Body.
+- *Tip: Use placeholders such as `{{points}}`, `{{action}}`, and `{{user}}` to personalize messages.*
+
+---
+
+### Step 6: Save and Publish
+Click **Save Rule** in the bottom panel. The rule becomes active immediately.
+
+---
+
+## Editing an Existing Point Rule
+
+### Full Rule Editor
+1. Go to the **Points** page.
+2. Locate the rule in the table or grid.
+3. Click the **Actions Menu (`...`)** on the rule row and select **Edit Rule**.
+4. Modify the required fields (points value, caps, eligibility, notification text, or active status).
+5. Click **Save Changes** in the floating bottom action bar.
+
+---
+
+### Quick Actions
+
+- **Toggle Active / Inactive**:
+  - Flip the switch in the **Status** column of any rule to enable or pause point distribution immediately without opening the edit screen.
+- **Quick Notification Updates**:
+  - Click **Actions (`...`)** → **Edit Notifications** to update push/email alert copy via a modal without navigating away.
+- **Duplicate Rule**:
+  - Click **Actions (`...`)** → **Duplicate** to quickly clone an existing rule setup with new values.
+- **Delete / Archive Rule**:
+  - Click **Actions (`...`)** → **Delete Rule** to remove obsolete rules.
+
+---
+
+## Viewing Point Rule Details & Insights
+
+### Key Metrics Bar
+At the top of the Points Manager, the dashboard provides live stats:
+- **Total Points Issued**: Total lifetime points rewarded across all activities.
+- **Active Scoring Rules**: Count of currently live rules awarding points.
+- **Rules with Caps**: Rules protected against abuse with daily/weekly limits.
+- **Total Point Events**: Cumulative trigger executions recorded.
+
+---
+
+### Display Views
+- **Table View**: Comprehensive view with columns for Serial Number, Origin Module, Source, Action Name, Points per trigger, Frequency Caps, Eligibility Tiers, Notification Badges, Status Switch, and Action Options.
+- **Grid View**: Visual card layout highlighting points badge, trigger frequency, eligibility badges, and quick toggles.
+
+---
+
+# Badges Engine
+
+## Overview
+**Badges** are visual achievements unlocked by members when they complete specific milestones, show consistent engagement, or perform notable actions across modules and integrations.
+
+---
+
+## Creating a Badge
+
+### Step 1: Access the Creation Page
+1. From the dashboard sidebar, navigate to **Gamification** → **Points & Badges**.
+2. Switch to the **Badges** tab.
+3. Click the **Add Badge** button in the top-right corner.
+
+---
+
+### Step 2: Visual Identity & Details
+- **Badge Name**: A distinct title for the achievement (e.g., *Community Pioneer*, *Course Champion*, *Top Contributor*).
+- **Badge Description**: The public summary shown to users explaining how the badge is earned.
+- **Badge Icon / Artwork**:
+  - **Emoji / Vector Picker**: Select from categorized icon sets (Success & Achievement, Rare & Premium, Community, Streaks).
+  - **Custom Image Upload**: Upload custom SVG, PNG, or WebP graphics with integrated cropping.
+
+---
+
+### Step 3: Trigger Conditions & Milestone Criteria
+- **Origin Source**: Select whether the badge trigger comes from a **Core Module** (e.g., Community, Courses, Events) or an **Integration** (e.g., Shopify, Discord).
+- **Module / Integration**: The specific subsystem monitoring member actions.
+- **Trigger Event / Action**: The specific event required (e.g., `post_created`, `quiz_passed`, `event_attended`).
+- **Occurrence / Threshold Count**: The number of times the action must be completed before the badge is awarded (e.g., 1 time for immediate award, 10 times for a streak milestone).
+
+---
+
+### Step 4: Member Eligibility
+Control who can earn this badge:
+- **All Members**: Available for anyone in the community to unlock.
+- **Specific Membership Tiers**: Limited exclusively to selected membership tiers (e.g., VIP, Gold, Pro).
+- **Specific User Segments**: Restricted to designated user lists or pilot cohorts.
+
+---
+
+### Step 5: Automated Award Notifications
+Configure automatic alerts sent immediately when a member unlocks the badge:
+- **Push Notification**: Toggle on/off, set alert title and body copy.
+- **Email Notification**: Toggle on/off, set email subject and congratulatory message.
+- *Personalization Tags*: Use `{{badge_name}}`, `{{user}}`, and `{{points}}` in notification templates.
+
+---
+
+### Step 6: Save & Publish
+Click **Save Badge** in the floating bottom panel to publish the badge immediately.
+
+---
+
+# Ranks & Level Progression
+
+## Overview
+**Ranks** represent long-term standing and prestige levels based on cumulative points earned by members. As members accumulate points across the platform, they automatically ascend through ranks (e.g., *Bronze* → *Silver* → *Gold* → *Diamond*).
+
+---
+
+## Creating a Rank
+
+### Step 1: Access the Creation Page
+1. From the dashboard sidebar, navigate to **Gamification** → **Points & Badges**.
+2. Switch to the **Ranks** tab.
+3. Click the **Add Rank** button in the top-right corner.
+
+---
+
+### Step 2: Rank Identity & Hierarchy
+- **Rank Name**: The title of the rank tier (e.g., *Novice*, *Explorer*, *Master*, *Legend*).
+- **Rank Priority / Level**: Numerical rank order (e.g., Level 1, Level 2, Level 3). Higher priority reflects higher status.
+- **Minimum Points Threshold**: The cumulative points balance required for a member to reach and unlock this rank (e.g., `0` for base rank, `500` for Silver, `2,500` for Gold, `10,000` for Diamond).
+
+---
+
+### Step 3: Color Themes & Rank Badge Icon
+- **Color Accent / Theme**: Select a preset metallic/gem theme (*Bronze, Silver, Gold, Platinum, Diamond, Emerald, Ruby, Sapphire, Amethyst, Obsidian*) or set a custom HEX color code.
+- **Rank Icon**:
+  - Choose a themed emoji/symbol (Trophies, Crowns, Shields, Stars, Gems).
+  - Or upload a custom branded badge graphic.
+
+---
+
+### Step 4: Perks & Public Description
+- **Description / Perks**: Detail the benefits, status privileges, or exclusive community access granted to members holding this rank.
+- **Public Display**: Toggle whether the rank badge and flair appear publicly on member profiles and leaderboards.
+
+---
+
+### Step 5: Rank Ascension Notifications
+Send automated congratulations when a member levels up:
+- **Push Notification**: Instant mobile/in-app alert announcing the new rank level.
+- **Email Notification**: Detailed email celebrating the rank milestone and highlighting unlocked perks.
+- *Personalization Tags*: Use `{{rank_name}}`, `{{user}}`, and `{{points}}`.
+
+---
+
+### Step 6: Save & Publish
+Click **Save Rank** to activate the tier. Members who meet the point threshold will automatically be assigned this rank.
+
+---
+
+## Leaderboards
+
+Leaderboards rank members based on point accumulation across customizable time windows:
+- **All-Time**: Overall platform champions since inception.
+- **Monthly**: Fresh competitive rankings refreshed at the 1st of each month.
+- **Weekly**: Fast-paced weekly sprint competitions.
+- **Tier/Group-Specific**: Isolated leaderboards restricted to specific membership clubs or subgroups.

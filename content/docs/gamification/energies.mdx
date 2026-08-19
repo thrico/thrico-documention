@@ -1,0 +1,61 @@
+---
+title: Energies & Streaks
+description: Configure energy regeneration cycles, action burn rates, engagement streaks, and reward multipliers.
+---
+
+# Energy & Streak Mechanics
+
+## Overview
+
+The **Energy System** introduces a replenishable resource model commonly used in gamified applications. Members consume energy units to play mini-games, perform high-impact community actions, or unlock special perks. Energy naturally regenerates over time, driving high-frequency daily retention.
+
+---
+
+## Energy Mechanics
+
+```
+  ┌────────────────────────────────────────────────────────┐
+  │                 Daily Energy Lifecycle                 │
+  └──────────────────────────┬─────────────────────────────┘
+                             │
+                             ▼
+              ⚡ Full Energy Pool (e.g. 100 ⚡)
+                             │
+            ┌────────────────┴────────────────┐
+            ▼                                 ▼
+   🎮 Play Mini-Games                ⭐ High-Value Actions
+   (Cost: 20 ⚡ per spin)             (Cost: 10 ⚡ per entry)
+            │                                 │
+            └────────────────┬────────────────┘
+                             ▼
+              🔋 Depleted Energy Pool
+                             │
+                             ▼
+        ⏳ Natural Regeneration (e.g. +10 ⚡ / hour)
+                  or Instant Daily Reset
+```
+
+### Energy Parameters
+
+| Configuration | Description | Default Value |
+|---------------|-------------|---------------|
+| **Max Energy Pool** | Maximum energy capacity a member can store at once. | `100 ⚡` |
+| **Recharge Rate** | Units regenerated automatically per fixed time window. | `+10 ⚡ / hour` |
+| **Daily Reset Hour** | Optional hard reset to 100% capacity at a specific UTC time. | `00:00 UTC` |
+| **Energy Boost Items** | Consumable items that instantly refill the energy bar. | Enabled |
+
+---
+
+## Daily Streaks & Multipliers
+
+Streaks reward members for consecutive days of activity within the community.
+
+### Streak Progression Ladders
+- **Day 1–3**: 1.0x baseline point multiplier.
+- **Day 4–7**: 1.25x point boost + 10 bonus energy on check-in.
+- **Day 8–14**: 1.5x point boost + exclusive badge unlock.
+- **Day 30+**: 2.0x legendary multiplier + VIP community flair.
+
+### Streak Recovery & Freeze
+- **Streak Freeze Shields**: Members can hold or purchase freeze shields that protect their streak from resetting if they miss a single day.
+- **Grace Period**: Configurable 6-hour grace window before a broken streak is reset to zero.

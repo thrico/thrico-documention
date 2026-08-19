@@ -1,0 +1,58 @@
+---
+title: Engagement Games
+description: Configure interactive mini-games such as Spin the Wheel, Scratch Cards, and Match & Win to boost daily active participation.
+---
+
+# Engagement Games
+
+## Overview
+
+**Engagement Games** give members fun, interactive ways to win points, digital currencies, discount coupons, and exclusive badges. Administrators have granular control over entry costs, win probabilities, prize pools, and cooldown limits.
+
+---
+
+## Supported Game Types
+
+### 🎡 1. Spin the Wheel
+A classic fortune wheel game where members spend energy or credits to spin for prizes.
+- **Configurable Slices**: Set between 6 to 12 slices with custom labels, icons, and prize weights.
+- **Guaranteed vs Chance Odds**: Control weighted probabilities for each slice (e.g., 50% small points, 5% jackpot voucher, 15% try again).
+- **Visual Themes**: Choose between arcade, neon, casino, or minimal aesthetic styles.
+
+---
+
+### 🎟️ 2. Scratch Cards
+A virtual scratch-off card experience where members reveal hidden symbols.
+- **Match Requirement**: Uncover 3 identical icons to win the corresponding prize tier.
+- **Dynamic Reveal Animations**: Interactive touch/cursor scratch interaction.
+- **Mystery Jackpots**: Ability to seed rare mystery reward codes into daily batches.
+
+---
+
+### 🃏 3. Match & Win
+A memory tile-matching game where members uncover pairs of cards under a countdown timer.
+- **Grid Layouts**: 2x2 (easy), 3x4 (medium), or 4x4 (advanced) card grids.
+- **Time Attack**: Members must finish within the timer to qualify for tier rewards.
+- **Score Multipliers**: Bonus points awarded for fewer moves and faster completion times.
+
+---
+
+## Game Administration & Economics
+
+### Setting Entry Requirements & Cooldowns
+- **Free Daily Plays**: Give members `N` free plays per calendar day.
+- **Energy Cost**: Require energy units (e.g., 20 ⚡ per play) once free turns are consumed.
+- **Currency Buy-In**: Allow members to wager virtual coins for entry into high-stakes reward rounds.
+- **Cooldown Interval**: Enforce waiting times between attempts (e.g., 1 play every 4 hours).
+
+---
+
+### Prize Pool & Probability Configuration
+
+| Prize Type | Reward Payload | Probability Weight | Daily Inventory Cap |
+|------------|----------------|-------------------|---------------------|
+| **Points Boost** | 50 Points | 45% | Unlimited |
+| **Energy Refill** | +30 Energy | 30% | Unlimited |
+| **Store Voucher** | 15% Off Shopify Code | 15% | 100 per day |
+| **Mega Jackpot** | 1,000 Coins + Diamond Badge | 1% | 5 per week |
+| **No Win / Try Again** | Consolation 5 Points | 9% | Unlimited |
