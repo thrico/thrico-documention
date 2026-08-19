@@ -1,4 +1,14 @@
 {
   "title": "Members",
-  "pages": ["index", "invite-members", "import-members", "member-approval", "member-management"]
+  "pages": [
+    "index",
+    "member-management",
+    "import-members",
+    "tiers",
+    "referrals",
+    "network-graph",
+    "classifications",
+    "member-profile",
+    "governance"
+  ]
 }

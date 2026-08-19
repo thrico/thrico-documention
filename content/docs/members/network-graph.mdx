@@ -1,0 +1,54 @@
+---
+title: Network Relationship Graph
+description: Interactive D3 force-directed visual relationship graph mapping member connectivity, community clusters, and influence hubs.
+---
+
+# Interactive Network Relationship Graph
+
+## Overview
+
+The **Network Graph** (`/members/graph`) is a visual intelligence and analytics tool built with interactive D3 force-directed simulations. It models the social and operational fabric of your community, turning raw engagement logs into intuitive network relationship maps.
+
+---
+
+## Graph Modeling & Semantics
+
+```
+              (Member A)
+             /    │     \
+            /     │      \ (Mentorship)
+   (Referral)  (Co-Member) \
+          /       │          \
+         ▼        ▼           ▼
+    (Member B)---(Group)---(Member C)
+```
+
+### Nodes
+- **Members**: Colored by membership tier or classification chapter. Size scales proportionally with community Impact Score or point balance.
+- **Entities / Groups**: Central anchors linking co-members across shared channels and events.
+
+### Edges (Relationships)
+- **Direct Friendships / Connections**: Mutual peer connections.
+- **Referral Bonds**: Directed arrows from inviter to invitee.
+- **Co-Attendance**: Connections formed by attending identical workshops or webinars.
+- **Mentorship Ties**: Verified mentor-mentee linkages.
+
+---
+
+## Interactive Controls & Features
+
+### 1. Dynamic Physics Simulation
+- Drag nodes to reposition clusters in real-time.
+- Adjust charge force, link distance, and collision radius to expand dense clusters.
+
+### 2. Multi-Layer Filters
+- **Filter by Tier**: Isolate and examine interactions among VIPs or founding members.
+- **Filter by Classification**: Highlight specific cohorts (e.g., *Class of 2026*) or chapters.
+- **Edge Weight Threshold**: Only render strong ties with multiple interactions.
+
+### 3. Cluster & Influence Hub Detection
+- Automatically identifies dense micro-communities and cross-pollinating members who bridge disconnected groups.
+- Pinpoints isolated members who may require targeted onboarding outreach.
+
+### 4. Node Inspection Modal
+- Clicking any node opens an instant slide-out tray displaying the member's profile summary, key stats, direct connection count, and quick messaging options.

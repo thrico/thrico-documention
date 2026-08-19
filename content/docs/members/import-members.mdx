@@ -1,38 +1,72 @@
 ---
-title: "Import Members"
-description: "Learn how to import members on the Thrico platform."
+title: Member Onboarding & Creation
+description: Invite individual members and perform bulk CSV imports with schema mapping and duplicate validation.
 ---
+
+# Member Onboarding & Creation
 
 ## Overview
 
-This guide walks you through how to **import members** in Thrico.
+The **Member Onboarding Subsystem** (`/members/create`) allows administrators to introduce new members to the platform via individual invitations, direct manual provisioning, or large-scale automated CSV imports.
 
-## Prerequisites
+---
 
-- **Entity Admin** or **Community Admin** role
-- At least one active community
+## Single Member Invitation
 
-## Navigation
+### Step 1: Identity & Credentials
+- **Full Name**: Legal or preferred member display name.
+- **Primary Email**: Account login identifier and notification address.
+- **Username / Handle**: Unique system identifier (auto-suggested from email).
+- **Authentication Method**: Send Magic Link invitation email or set a temporary password with mandatory reset on first login.
+
+---
+
+### Step 2: Tier, Roles & Access
+- **System Role**: Assign platform permissions (`Member`, `Moderator`, `Admin`).
+- **Membership Tier**: Assign initial tier level (`Free`, `Pro`, `VIP`).
+- **Chapter / Sub-Community**: Pre-enroll member into relevant regional chapters or groups.
+
+---
+
+### Step 3: Classification Tags
+- Attach organizational taxonomy tags (e.g., *Engineering, Cohort 2026, London Chapter*).
+
+---
+
+### Step 4: Dispatch Welcome Email
+- Preview and trigger a customized welcome email including platform branding, activation link, and quick onboarding checklist.
+
+---
+
+## Bulk CSV Import
+
+Seamlessly migrate thousands of member records from legacy databases, spreadsheets, or third-party CRM platforms.
 
 ```
-Dashboard → Members → Import Members
+  ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
+  │  1. Upload CSV  │ ────> │ 2. Map Columns  │ ────> │ 3. Pre-Validate │
+  └─────────────────┘       └─────────────────┘       └────────┬────────┘
+                                                               │
+                                                               ▼
+                                                      ┌─────────────────┐
+                                                      │ 4. Batch Import │
+                                                      └─────────────────┘
 ```
 
-## Step-by-Step Instructions
+### 1. Upload CSV File
+- Drag and drop `.csv` or `.xlsx` files (up to 50MB per batch).
+- Download the official sample template with predefined header formats.
 
-### Step 1: Navigate to Members
+### 2. Intelligent Field Mapping
+- Auto-matches standard columns (*First Name, Last Name, Email, Phone, Tags*).
+- Allows mapping custom spreadsheet headers to custom profile entity attributes.
 
-Open the **Members** section from the sidebar.
+### 3. Pre-Validation Engine
+Before executing the import, the system validates the entire dataset:
+- **Duplicate Check**: Highlights duplicate emails existing in the community or within the uploaded sheet.
+- **Format Verification**: Checks for invalid email formats, missing required fields, and malformed phone numbers.
+- **Resolution Options**: Choose whether to `Skip Duplicates`, `Overwrite Existing Records`, or `Halt Import`.
 
-### Step 2: Follow the Workflow
-
-Complete the required steps for import members.
-
-### Step 3: Confirm
-
-Review and confirm your actions.
-
-## Related Articles
-
-- [Member Management Overview](/docs/members)
-- [Community Management](/docs/community)
+### 4. Processing & Progress Tracker
+- Live background processing progress bar with success/failure counters.
+- Downloadable error report detailing rejected rows with specific validation failure reasons.

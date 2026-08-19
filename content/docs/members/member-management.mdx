@@ -1,38 +1,54 @@
 ---
-title: "Member Management"
-description: "Learn how to member management on the Thrico platform."
+title: Member Directory & Operations
+description: Search, filter, bulk operations, view modes, and directory operations across community members.
 ---
+
+# Member Directory & Operations
 
 ## Overview
 
-This guide walks you through how to **member management** in Thrico.
+The **Member Directory** (`/members/all`) is the central control plane for browsing, filtering, inspecting, and executing administrative actions across all registered community members.
 
-## Prerequisites
+---
 
-- **Entity Admin** or **Community Admin** role
-- At least one active community
+## Search & Filtering Capabilities
 
-## Navigation
+### Real-Time Search
+- **Supported Fields**: Instant debounced search across Full Name, Username/Handle, Primary Email Address, Phone Number, and Custom Attributes.
+- **Syntax**: Supports exact string matches and multi-word token queries.
 
-```
-Dashboard → Members → Member Management
-```
+---
 
-## Step-by-Step Instructions
+### Multi-Dimensional Filters
 
-### Step 1: Navigate to Members
+| Filter Type | Options & Scope |
+| :--- | :--- |
+| **Account Status** | `Active`, `Pending Approval`, `Suspended`, `Archived`, `Unverified Email` |
+| **Membership Tier** | `Free Tier`, `Silver Tier`, `Gold VIP`, `Founding Member`, Custom Tiers |
+| **System Role** | `Super Admin`, `Entity Admin`, `Community Moderator`, `Member` |
+| **Classification** | Chapter / Region, Cohort / Graduation Batch, Department, Industry |
+| **Activity Level** | Active Last 7 Days, Inactive 30+ Days, High Spender, High Impact |
 
-Open the **Members** section from the sidebar.
+---
 
-### Step 2: Follow the Workflow
+## Directory View Modes
 
-Complete the required steps for member management.
+### 📋 Table View
+Optimized for high-density administrative operations.
+- **Columns**: Selection Checkbox, Avatar & Display Name, Handle, Contact Email, Status Badge, Current Tier, Join Date, Engagement/Impact Score, and Actions Menu (`...`).
+- **Sorting**: Click any column header to sort in ascending or descending order.
 
-### Step 3: Confirm
+### 🎴 Card / Grid View
+Tailored for showcase and directory browsing.
+- **Highlights**: Large member avatars, cover banner accents, visual rank badges, public bio excerpts, location flairs, and direct message/profile action buttons.
 
-Review and confirm your actions.
+---
 
-## Related Articles
+## Bulk Operations
 
-- [Member Management Overview](/docs/members)
-- [Community Management](/docs/community)
+Perform batch actions across multiple selected members or entire filtered cohorts:
+
+- **Bulk Tier Upgrade / Downgrade**: Change membership tier levels with automatic perk recalculations.
+- **Bulk Messaging & Alerts**: Send targeted push notifications or email broadcasts to selected cohorts.
+- **Bulk Status Modification**: Activate, suspend, or archive multiple accounts in a single confirmation step.
+- **Bulk CSV / JSON Export**: Export custom datasets including profile fields, transaction counts, and contact records.

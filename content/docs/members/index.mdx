@@ -1,22 +1,80 @@
 ---
-title: Member Management
-description: Invite, import, approve, and manage members on the Thrico platform.
+title: Members & Network Architecture
+description: Central directory, identity registry, tiered memberships, classifications, referral engine, 360° profiles, and network relationship graph.
 ---
+
+# Community Members & Network Architecture
 
 ## Overview
 
-Member management is at the core of every Thrico community. This section covers everything you need to know about managing your members.
+The **Members Module** (`/members/*`) serves as the central directory, identity registry, relationship graph, and lifecycle management hub for all users across your community ecosystem. It provides member directory management, tiered memberships, multi-dimensional classifications, referral tracking, 360° individual member profiles, interactive network visualization, and administrative governance.
 
-## Key Features
+---
 
-- **Invite Members** — Send email invitations to individuals or groups
-- **Import Members** — Bulk import members via CSV
-- **Approval Workflows** — Review and approve member requests
-- **Member Management** — View, edit, and manage member profiles
+## Global Navigation & Architecture Map
+
+```
+/members
+ ├── dashboard              → Macro member analytics, growth velocity, and status health
+ ├── all                    → Complete member directory, search, filter, bulk actions, and exports
+ ├── create                 → Single member onboarding and bulk CSV invitation/import
+ ├── referrals              → Referral campaigns, inviter-invitee trees, and conversion analytics
+ ├── tiers                  → Membership tier configuration, paywalls, benefits, and perks
+ ├── graph                  → Interactive D3 force-directed network relationship graph
+ ├── classification         → Organizational structuring (Chapters, Cohorts, Departments, Tags)
+ ├── reports                → Moderation queue for reported profiles and compliance issues
+ ├── audit-log              → Immutable history of member account modifications and status changes
+ ├── settings               → Profile fields schema, privacy defaults, and onboarding settings
+ └── [id]                   → Member 360° Profile & Activity Hub
+      ├── (overview)        → Contact details, bio, membership status, and badges
+      ├── edit              → Profile data editor and role/tier assignment
+      ├── gamification      → Member points ledger, earned badges, rank history, and wallet
+      ├── stats             → Activity trends, engagement score, and session metrics
+      ├── communities       → Sub-community and chapter memberships
+      ├── events            → Event registrations, attendance, and ticket records
+      ├── feed              → Posts, articles, and status updates published by member
+      ├── forums            → Forum discussions started and replies authored
+      ├── jobs & listings   → Jobs posted, applications submitted, and marketplace listings
+      ├── polls & moments   → Participation in community voting and media moments
+      └── referrals         → Member's personal referral link performance and invited peers
+```
+
+---
+
+## Core Capabilities
+
+### 👥 Member Directory & Operations
+Search across custom attributes, filter by tier/role/classification, switch between table and visual card modes, and perform bulk operations like batch tier updates and CSV exports.
+
+### ➕ Onboarding & Creation
+Single-member invite workflows and intelligent CSV batch importer with column mapping and pre-flight duplicate validation.
+
+### 🎖️ Membership Tiers
+Monetize and structure community access with progressive tier levels, gated content/events, perk distribution, and Stripe/Shopify billing integration.
+
+### 🌿 Referral Engine
+Empower members with personalized tracking links, monitor inviter-invitee trees, and automate reward distribution for successful conversions.
+
+### 🕸️ Network Relationship Graph
+Interactive D3 force-directed visualization displaying community connectivity, micro-clusters, influence hubs, and member relationship paths.
+
+### 🏷️ Multi-Dimensional Classification
+Organize member populations with structured taxonomies including geographic chapters, time-bound cohorts, organizational departments, and custom tags.
+
+### 👤 Member 360° Profile Console
+Comprehensive profile console bringing together personal bio, activity metrics, gamification wallets, content contributions, and governance records.
+
+---
+
+## Explore Member Sub-Modules
 
 <Cards>
-  <Card title="Invite Members" href="/docs/members/invite-members" />
-  <Card title="Import Members" href="/docs/members/import-members" />
-  <Card title="Member Approval" href="/docs/members/member-approval" />
-  <Card title="Member Management" href="/docs/members/member-management" />
+  <Card title="Member Directory" href="/docs/members/member-management" description="Search, filtering, table/grid views, and bulk actions." />
+  <Card title="Onboarding & Import" href="/docs/members/import-members" description="Single-member invitations and bulk CSV ingestion." />
+  <Card title="Membership Tiers" href="/docs/members/tiers" description="Access control, monetization, and tier-gated perks." />
+  <Card title="Referral Program" href="/docs/members/referrals" description="Campaign tracking, referral trees, and automated conversion rewards." />
+  <Card title="Network Graph" href="/docs/members/network-graph" description="Interactive D3 visual relationship map and cluster analysis." />
+  <Card title="Classifications" href="/docs/members/classifications" description="Chapters, cohorts, departments, and custom segmentation tags." />
+  <Card title="Member 360° Profile" href="/docs/members/member-profile" description="Deep-dive into individual member profiles, history, and records." />
+  <Card title="Governance & Audit" href="/docs/members/governance" description="Reports queue, audit logs, and global onboarding configuration." />
 </Cards>

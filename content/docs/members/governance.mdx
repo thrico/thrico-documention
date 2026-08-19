@@ -1,0 +1,46 @@
+---
+title: Governance, Moderation & Audit
+description: Member moderation queue, reported profiles, immutable audit logging, and global onboarding configuration.
+---
+
+# Governance, Moderation & Audit
+
+## Overview
+
+The **Governance Suite** ensures compliance, platform safety, and institutional accountability across the member directory through moderation queues, audit logs, and global policy configurations.
+
+---
+
+## 1. Reported Members Queue (`/members/reports`)
+
+When community members or automated AI moderation filters flag a profile, it enters the **Reports Triage Queue**:
+
+- **Report Details**: Shows reporter identity, reported member, timestamp, violation reason category (*Spam, Harassment, Inappropriate Content, Impersonation*), and context evidence.
+- **Triage Actions**:
+  - **Dismiss Report**: Mark as reviewed with no infraction recorded.
+  - **Issue Warning**: Send a formal automated warning notification to the member.
+  - **Temporary Suspension**: Place the account on a 24-hour, 7-day, or 30-day freeze.
+  - **Permanent Ban & Archive**: Expel the member and purge active sessions across web and mobile.
+
+---
+
+## 2. Immutable Member Audit Log (`/members/audit-log`)
+
+Every administrative action affecting member accounts is captured in an append-only audit trail:
+
+- **Recorded Events**:
+  - Manual tier promotions or demotions.
+  - Role modifications (e.g., granting Moderator permissions).
+  - Manual point and currency adjustments.
+  - Profile attribute edits executed by staff.
+  - Account activations, suspensions, and data export requests.
+- **Metadata Captured**: Admin user ID, IP address, timestamp, target member ID, and pre-modification vs post-modification state diff.
+
+---
+
+## 3. Global Member Settings (`/members/settings`)
+
+- **Profile Schema Builder**: Add custom text, dropdown, URL, date, or multi-select fields to member profiles.
+- **Privacy Defaults**: Control whether member directory listings, email addresses, and phone numbers are visible publicly, to logged-in members only, or strictly to administrators.
+- **Onboarding Requirements**: Set mandatory profile completion criteria (e.g., must upload an avatar and fill out bio before posting in feeds).
+- **GDPR & Right-to-be-Forgotten**: Execute automated account anonymization and data export packages on demand.

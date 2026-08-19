@@ -1,0 +1,61 @@
+---
+title: Membership Tiers
+description: Configure progressive membership tiers, gated access, perks, recurring billing, and paywalls.
+---
+
+# Membership Tiers
+
+## Overview
+
+The **Membership Tiers Engine** (`/members/tiers`) enables communities to structure access levels, monetize premium offerings, and recognize distinguished contributors. Tiers define paywalls, exclusive content visibility, special event access, and recurring automated perks.
+
+---
+
+## Tier Structure & Hierarchy
+
+Organizations can define multiple ascending tier levels:
+
+```
+  ┌──────────────────────────────────────────────────────────┐
+  │                 Tier Progression Hierarchy               │
+  └────────────────────────────┬─────────────────────────────┘
+                               │
+            ┌──────────────────┼──────────────────┐
+            ▼                  ▼                  ▼
+       🥉 Free Member      🥈 Pro Member     🥇 Executive VIP
+       • Public Feed       • Premium Groups   • All Groups
+       • Basic Events      • Exclusive Events • VIP Concierge
+       • Standard Badges   • Monthly Bonus    • 2x Point Boost
+```
+
+---
+
+## Tier Configuration Settings
+
+### Basic Identity
+- **Tier Name & Slug**: Descriptive name (e.g., *Community Pioneer, VIP Patron*).
+- **Badge & Color Theme**: Metallic/gem accent flair displayed on member avatars and directory listings.
+- **Description**: Public summary of tier benefits and eligibility rules.
+
+---
+
+### Access Control & Gating
+- **Community Gating**: Specify which sub-communities, discussion boards, and feed channels are unlocked for this tier.
+- **Course & Content Access**: Grant full access or discounts on premium courses and digital resources.
+- **Event Ticketing**: Offer free RSVPs, early-bird registration windows, or exclusive VIP ticket tiers.
+
+---
+
+### Automated Tier Perks
+- **Monthly Point / Coin Stipend**: Automatically credit a recurring balance of points or currency tokens on the first of each month.
+- **Earning Multipliers**: Apply a global point boost (e.g., 1.5x on all actions) while the member maintains this tier.
+- **Priority Moderation**: Priority queue for verified forum answers and marketplace listings.
+
+---
+
+## Billing & Payment Gateway Integration
+
+Connect with Stripe or Shopify to support paid membership tiers:
+- **Recurring Subscriptions**: Monthly, quarterly, or annual billing cycles.
+- **Free Trials & Grace Periods**: Automated grace periods for failed card payments before tier downgrade.
+- **Automatic Downgrade / Upgrade Webhooks**: Instant synchronization of access status upon subscription changes.
