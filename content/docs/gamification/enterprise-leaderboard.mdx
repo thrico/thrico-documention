@@ -1,0 +1,740 @@
+---
+title: Enterprise Headless Leaderboards
+description: Zero-iframe, headless gamification and ranking infrastructure. Embed live, high-performance community rankings and podiums directly into your native web applications.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+The **Thrico Enterprise Leaderboard Platform** is a zero-iframe, headless gamification and ranking infrastructure. It allows enterprise clients (such as financial institutions, fintech platforms, loyalty programs, and web portals) to embed live, high-performance community rankings, custom podiums, and badge tiers directly into their native HTML, React, Next.js, Angular, or Vue web applications.
+
+---
+
+## 📑 Table of Contents
+
+1. [Architectural Overview](#1-architectural-overview)
+2. [Why Headless (Zero Iframes)?](#2-why-headless-zero-iframes)
+3. [Dashboard Configuration & Settings](#3-dashboard-configuration--settings)
+4. [Quick Start (HTML CDN Integration)](#4-quick-start-html-cdn-integration)
+5. [NPM / Module Installation](#5-npm--module-installation)
+6. [Authentication & Domain Whitelisting](#6-authentication--domain-whitelisting)
+7. [JavaScript / TypeScript SDK Reference](#7-javascript--typescript-sdk-reference)
+   - [Initialization (`ThricoLeaderboard.init`)](#initialization-thricoleaderboardinit)
+   - [Top-N Performers / Podium (`getTopUsers`)](#top-n-performers--podium-gettopusers)
+   - [Paginated Leaderboard Entries (`getEntries`)](#paginated-leaderboard-entries-getentries)
+   - [Individual Rank Standing (`getMyRank`)](#individual-rank-standing-getmyrank)
+   - [Leaderboard Configuration (`getConfig`)](#leaderboard-configuration-getconfig)
+   - [List Active Leaderboards (`listLeaderboards`)](#list-active-leaderboards-listleaderboards)
+8. [Direct REST API Reference (Headless & Mobile Apps)](#8-direct-rest-api-reference-headless--mobile-apps)
+9. [Data Contracts & Models](#9-data-contracts--models)
+10. [Media & Image CDN Standards](#10-media--image-cdn-standards)
+11. [End-to-End Implementation Example](#11-end-to-end-implementation-example)
+12. [Production Best Practices & Troubleshooting](#12-production-best-practices--troubleshooting)
+
+---
+
+## 1. Architectural Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│              Enterprise Web Application (HTML / React / Vue / Angular)           │
+│                                                                                 │
+│   ┌─────────────────────┐   ┌──────────────────────┐   ┌────────────────────┐   │
+│   │ Native HTML Layout  │   │ Custom 3-Tier Podium │   │ Paginated Rows     │   │
+│   └──────────┬──────────┘   └──────────┬───────────┘   └─────────┬──────────┘   │
+│              └─────────────────────────┼─────────────────────────┘              │
+│                                        ▼                                        │
+│                      Thrico Leaderboard CDN SDK (< 17 KB)                       │
+└────────────────────────────────────────┬────────────────────────────────────────┘
+                                         │ 1. Origin-Bound Token Auth
+                                         │ 2. Real-Time Rank Queries
+                                         ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                     Thrico Edge Gateway (sdk.thrico.network)                     │
+│                                                                                 │
+│   • POST /v1/sdk/auth/token             (Origin Whitelist & JWT Issuance)       │
+│   • GET  /v1/sdk/leaderboards/:code/top    (Podium & Top-N Standings)           │
+│   • GET  /v1/sdk/leaderboards/:code/entries(Paginated Global Standings)         │
+│   • GET  /v1/sdk/leaderboards/:code/me     (Current User Global Rank)           │
+└────────────────────────────────────────┬────────────────────────────────────────┘
+                                         ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                       Thrico High-Speed Ranking Engine                          │
+│                                                                                 │
+│   ┌───────────────────────────┐         ┌───────────────────────────────────┐   │
+│   │    Redis Sorted Set       │         │        PostgreSQL Database        │   │
+│   │ (Sub-5ms Deterministic    ├────────►│  (User Profiles, Badges & Fallback│   │
+│   │  Microsecond Tie-Breaking)│         │   Metadata Enrichment)            │   │
+│   └───────────────────────────┘         └───────────────────────────────────┘   │
+│                                                           │                     │
+│                                                           ▼                     │
+│                                         ┌───────────────────────────────────┐   │
+│                                         │      AWS CloudFront Media CDN     │   │
+│                                         │       (cdn.thrico.network)        │   │
+│                                         └───────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Key Performance Guarantees:
+- **Zero Iframes**: Integrated directly into your DOM. You maintain 100% control over CSS, typography, responsive breakpoints, and animations.
+- **Sub-10ms Latency**: Leaderboard ranks are indexed in high-performance **Redis Sorted Sets (ZSET)**.
+- **Deterministic Ranking**: Microsecond-precision tie-breaking guarantees no two members share a rank position.
+- **Ephemerality & Security**: Ephemeral, origin-bound JWTs ensure secret keys are never exposed in client-side code.
+
+---
+
+## 2. Why Headless (Zero Iframes)?
+
+Traditional iframe embeds suffer from major enterprise limitations:
+- ❌ **Inconsistent Styling**: Impossible to seamlessly match enterprise design systems and corporate brand guidelines.
+- ❌ **Poor Mobile Responsiveness**: Inner iframe scrollbars, viewport clipping, and broken touch gestures.
+- ❌ **SEO & Accessibility**: Invisible to search crawlers, difficult for screen reader workflows.
+- ❌ **Security Restrictions**: Blocked by third-party cookie restrictions, partitioned storage, and strict `X-Frame-Options`.
+
+**Thrico's Headless Approach** provides pure data delivery via a lightweight CDN JavaScript SDK or raw JSON endpoints. You render standard HTML elements (`<div>`, `<table>`, `<img>`) styled with your own CSS or UI design system.
+
+---
+
+## 3. Dashboard Configuration & Settings
+
+Enterprise administrators manage API keys, allowed domains, and embed configurations directly in the Thrico Admin Portal.
+
+<Callout type="info">
+  **Dashboard URL**: Navigate to **Gamification** → **Points & Badges** → **Settings** → **Leaderboard**  
+  Direct Path: `/gamification/points-and-badges/settings/leaderboard`
+</Callout>
+
+### Available Hub Tabs:
+1. **Leaderboards**: View, configure, and monitor active community and enterprise leaderboard codes.
+2. **API Credentials**: Retrieve your public `clientId` (e.g., `thrico_client_...`) and provision client secrets.
+3. **Allowed Domains**: Whitelist authorized CORS origins (e.g., `https://rewards.yourcompany.com`, `http://localhost:*`).
+4. **Embed & SDK**: Live generator with instant drop-in HTML widgets, vanilla JS, React/Next.js components, and cURL snippets.
+
+---
+
+## 4. Quick Start (HTML CDN Integration)
+
+Drop the Thrico Leaderboard SDK script onto any HTML webpage:
+
+```html
+<!-- 1. Include Standalone Browser SDK (Lightweight < 17 KB) -->
+<script src="https://assets.thrico.network/leaderboard/v1/leaderboard.min.js"></script>
+
+<!-- 2. Containers for Native Presentation -->
+<div id="podium-root"></div>
+<div id="leaderboard-root"></div>
+
+<!-- 3. Initialize and Render -->
+<script>
+  (async function() {
+    // Initialize client with your public Client ID
+    const leaderboard = window.ThricoLeaderboard.init({
+      clientId: "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff",
+      endpoint: "https://sdk.thrico.network" // or "http://localhost:5555" for local dev
+    });
+
+    const LEADERBOARD_CODE = "rewards_monthly_champions";
+
+    // 1. Fetch Top 3 for Podium
+    const topData = await leaderboard.getTopUsers(LEADERBOARD_CODE, { limit: 3 });
+    console.log("Top 3 Podium:", topData.topEntries);
+
+    // 2. Fetch Page 1 of Leaderboard
+    const pageData = await leaderboard.getEntries(LEADERBOARD_CODE, { page: 1, limit: 20 });
+    console.log("Page 1 Entries:", pageData.entries);
+  })();
+</script>
+```
+
+---
+
+## 5. NPM / Module Installation
+
+For modern React, Next.js, Vue, Angular, or Node.js applications:
+
+<Tabs items={['npm', 'pnpm', 'yarn']}>
+  <Tab value="npm">
+```bash
+npm install @thrico/leaderboard-sdk
+```
+  </Tab>
+  <Tab value="pnpm">
+```bash
+pnpm add @thrico/leaderboard-sdk
+```
+  </Tab>
+  <Tab value="yarn">
+```bash
+yarn add @thrico/leaderboard-sdk
+```
+  </Tab>
+</Tabs>
+
+### ES Module / TypeScript Usage:
+
+```typescript
+import { ThricoLeaderboardClient } from "@thrico/leaderboard-sdk";
+
+const client = new ThricoLeaderboardClient({
+  clientId: "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff",
+  endpoint: "https://sdk.thrico.network",
+  autoRefreshIntervalMs: 30000, // Optional: Poll every 30s
+});
+
+async function loadLeaderboard() {
+  const { topEntries } = await client.getTopUsers("rewards_monthly_champions", { limit: 3 });
+  const { entries, pagination } = await client.getEntries("rewards_monthly_champions", { page: 1, limit: 20 });
+  return { topEntries, entries, pagination };
+}
+```
+
+---
+
+## 6. Authentication & Domain Whitelisting
+
+### How It Works Under the Hood:
+1. You pass your public **Client ID** (`thrico_client_...`) to the SDK.
+2. The browser initiates a `POST /v1/sdk/auth/token` request with the standard HTTP `Origin` header (e.g. `https://rewards.yourcompany.com`).
+3. The Thrico Gateway verifies that the incoming `Origin` matches the tenant's **Allowed Domains** whitelist.
+4. If whitelisted, the Gateway issues a short-lived (1-hour) signed JWT.
+5. The SDK's internal `TokenManager` caches this token and silently auto-renews it 5 minutes before expiration.
+
+### Whitelisting Origins:
+Enterprise admins configure allowed origins in the Thrico Admin Portal at `/gamification/points-and-badges/settings/leaderboard` under the **Allowed Domains** tab, or via GraphQL:
+
+```graphql
+mutation ConfigureClient {
+  updateEnterpriseLeaderboardClient(
+    id: "..."
+    input: {
+      allowedDomains: [
+        "https://www.yourcompany.com",
+        "https://*.yourcompany.com",
+        "http://localhost:3000",
+        "http://localhost:5501",
+        "http://127.0.0.1:5500"
+      ]
+    }
+  ) {
+    id
+    allowedDomains
+  }
+}
+```
+
+<Callout type="warn">
+  **Local Development**: Adding `localhost` or `http://localhost:*` allows requests from any local development port (Next.js, Vite, Live Server).
+</Callout>
+
+---
+
+## 7. JavaScript / TypeScript SDK Reference
+
+### Initialization (`ThricoLeaderboard.init`)
+
+Initializes a singleton instance of the Thrico Leaderboard Client.
+
+```typescript
+const client = window.ThricoLeaderboard.init(config);
+```
+
+#### Parameters (`LeaderboardClientConfig`):
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `clientId` | `string` | *(Required)* | Your enterprise Client ID (`thrico_client_...`). |
+| `endpoint` | `string` | `"https://sdk.thrico.network"` | Base URL of the Thrico SDK gateway. |
+| `timeoutMs` | `number` | `10000` | HTTP request timeout in milliseconds. |
+| `autoRefreshIntervalMs` | `number` | `0` (disabled) | Periodic background poll interval in milliseconds. |
+
+---
+
+### Top-N Performers / Podium (`getTopUsers`)
+
+Fetches the leading participants (typically Top 3) for rendering award podiums.
+
+```typescript
+const result = await client.getTopUsers(code, options);
+```
+
+#### Arguments:
+- `code` (`string`): The leaderboard code identifier (e.g. `"rewards_monthly_champions"`).
+- `options` (`object`, optional):
+  - `limit` (`number`): Number of entries to retrieve (Default: `3`, Max: `20`).
+
+#### Return Type:
+```typescript
+interface TopUsersResponse {
+  leaderboard: {
+    code: string;
+    name: string;
+  };
+  topEntries: LeaderboardEntry[]; // Also aliased as `top`
+}
+```
+
+---
+
+### Paginated Leaderboard Entries (`getEntries`)
+
+Retrieves paginated leaderboard rows with deterministic ordering and global rank preservation.
+
+```typescript
+const result = await client.getEntries(code, options);
+```
+
+#### Arguments:
+- `code` (`string`): The leaderboard code identifier.
+- `options` (`object`, optional):
+  - `page` (`number`): Page number (1-indexed). Page 2 starts at rank 21 (for `limit: 20`).
+  - `limit` (`number`): Entries per page (Default: `20`, Max: `100`).
+  - `cursor` (`string`): Base64 cursor for high-performance cursor-based pagination.
+
+#### Return Type:
+```typescript
+interface PaginatedEntriesResponse {
+  leaderboard: {
+    code: string;
+    name: string;
+    periodType: string;
+  };
+  entries: LeaderboardEntry[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+    nextCursor?: string | null;
+    previousCursor?: string | null;
+  };
+}
+```
+
+---
+
+### Individual Rank Standing (`getMyRank`)
+
+Fetches a specific user's rank position, movement, points, and percentile without loading the entire leaderboard.
+
+```typescript
+const rankInfo = await client.getMyRank(code, userId);
+```
+
+#### Arguments:
+- `code` (`string`): Leaderboard code identifier.
+- `userId` (`string`): UUID or identifier of the user.
+
+#### Return Type:
+```typescript
+interface CurrentUserRankResult {
+  rank: number;
+  points: number;
+  previousRank: number | null;
+  movement: number | null;      // +2 (gained 2 ranks), -1 (dropped), 0 (unchanged)
+  totalParticipants: number;
+  percentile: number;           // e.g. 98.5 (in top 1.5% of users)
+  user: PublicLeaderboardUser;
+}
+```
+
+---
+
+### Leaderboard Configuration (`getConfig`)
+
+Retrieves metadata, active period dates, and display rules configured for the leaderboard.
+
+```typescript
+const config = await client.getConfig(code);
+```
+
+---
+
+### List Active Leaderboards (`listLeaderboards`)
+
+Lists all active leaderboards enabled for your enterprise client.
+
+```typescript
+const leaderboards = await client.listLeaderboards();
+```
+
+---
+
+## 8. Direct REST API Reference (Headless & Mobile Apps)
+
+For native mobile applications (iOS/Swift, Android/Kotlin) or backend microservices, all endpoints can be called directly over HTTP.
+
+### Base URLs:
+- **Production Gateway**: `https://sdk.thrico.network`
+- **Local Dev Gateway**: `http://localhost:5555`
+
+---
+
+### 1. Acquire Access Token
+- **Method**: `POST`
+- **Path**: `/v1/sdk/auth/token`
+- **Headers**:
+  - `Content-Type: application/json`
+  - `Origin: https://rewards.yourcompany.com`
+
+**Request Body**:
+```json
+{
+  "clientId": "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff"
+}
+```
+
+**Success Response (HTTP 200)**:
+```json
+{
+  "success": true,
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsIn...",
+    "token": "eyJhbGciOiJIUzI1NiIsIn...",
+    "tokenType": "Bearer",
+    "expiresIn": 3600,
+    "entityId": "f5827d97-eedf-4b89-b5be-535ca09d5854",
+    "clientId": "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff",
+    "allowedLeaderboards": ["*"]
+  },
+  "meta": {
+    "timestamp": "2026-10-05T08:00:00.000Z",
+    "version": "v1"
+  }
+}
+```
+
+---
+
+### 2. Get Top Performers (Podium)
+- **Method**: `GET`
+- **Path**: `/v1/sdk/leaderboards/:code/top?limit=3`
+- **Headers**:
+  - `Authorization: Bearer <ACCESS_TOKEN>`
+
+**Success Response (HTTP 200)**:
+```json
+{
+  "success": true,
+  "data": {
+    "leaderboard": {
+      "code": "rewards_monthly_champions",
+      "name": "SmartEarn Monthly Champions"
+    },
+    "topEntries": [
+      {
+        "rank": 1,
+        "points": 13567,
+        "previousRank": 2,
+        "movement": 1,
+        "isNew": false,
+        "user": {
+          "id": "4fe5617f-22f4-42cb-8093-26bf64964cd1",
+          "displayName": "Alex Morgan",
+          "avatarUrl": "https://cdn.thrico.network/f5827d97-eedf-4b89-b5be-535ca09d5854/user/4fe5617f-22f4-42cb-8093-26bf64964cd1/20260429-hcful.webp",
+          "badges": [
+            {
+              "id": "1336e73e-b342-4ae0-a189-ab62498fc86a",
+              "name": "Grandmaster",
+              "icon": "https://cdn.thrico.network/badges/grandmaster.png"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+---
+
+### 3. Get Paginated Entries
+- **Method**: `GET`
+- **Path**: `/v1/sdk/leaderboards/:code/entries?page=1&limit=20`
+- **Headers**:
+  - `Authorization: Bearer <ACCESS_TOKEN>`
+
+**Success Response (HTTP 200)**:
+```json
+{
+  "success": true,
+  "data": {
+    "leaderboard": {
+      "code": "rewards_monthly_champions",
+      "name": "SmartEarn Monthly Champions",
+      "periodType": "MONTHLY"
+    },
+    "entries": [
+      {
+        "rank": 1,
+        "points": 13567,
+        "previousRank": 2,
+        "movement": 1,
+        "isNew": false,
+        "user": {
+          "id": "4fe5617f-22f4-42cb-8093-26bf64964cd1",
+          "displayName": "Alex Morgan",
+          "avatarUrl": "https://cdn.thrico.network/f5827d97-eedf-4b89-b5be-535ca09d5854/user/4fe5617f-22f4-42cb-8093-26bf64964cd1/20260429-hcful.webp",
+          "badges": [{ "id": "...", "name": "Grandmaster" }]
+        }
+      }
+    ]
+  },
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 97,
+    "totalPages": 5,
+    "hasNext": true,
+    "hasPrev": false
+  }
+}
+```
+
+---
+
+## 9. Data Contracts & Models
+
+### `LeaderboardEntry`
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `rank` | `number` | True global rank position (1, 2, 3...). Page 2 starts at 21 for 20-item pages. |
+| `points` | `number` | Integer gamification points earned in this leaderboard period. |
+| `previousRank` | `number \| null` | Rank position in previous snapshot period. `null` if first appearance. |
+| `movement` | `number \| null` | Rank movement delta (`previousRank - currentRank`). Positive = climb, negative = drop. |
+| `isNew` | `boolean` | `true` if member newly entered the leaderboard standings. |
+| `user` | `PublicLeaderboardUser` | Public sanitized profile of the participant. |
+
+### `PublicLeaderboardUser`
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `string` | Unique participant UUID. |
+| `displayName` | `string` | Full name or masked name (e.g. `"R***l S***a"` if masking enabled). |
+| `avatarUrl` | `string` | High-resolution WebP avatar URL hosted on `cdn.thrico.network`. |
+| `badges` | `Badge[]` | Array of earned badges visible for this user. |
+
+### `Badge`
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | `string` | Unique badge UUID. |
+| `name` | `string` | Badge title (e.g. `"Grandmaster"`, `"Champion"`, `"Rising Star"`). |
+| `icon` | `string \| null` | Full CDN icon URL or emoji representation. |
+
+---
+
+## 10. Media & Image CDN Standards
+
+To ensure optimal performance and avoid cross-origin image blocking:
+
+1. **Origin Domain**: All participant avatars and badge icons strictly resolve to:
+   ```
+   https://cdn.thrico.network/...
+   ```
+2. **Standard Fallback**:
+   If an avatar fails to load (network drop, ad-blocker), always use the official fallback placeholder:
+   ```
+   https://cdn.thrico.network/placeholder-user.jpg
+   ```
+3. **HTML Avatar Implementation**:
+   ```html
+   <img
+     class="avatar"
+     src="${user.avatarUrl}"
+     alt="${user.displayName}"
+     onerror="this.onerror=null;this.src='https://cdn.thrico.network/placeholder-user.jpg'"
+   />
+   ```
+
+---
+
+## 11. End-to-End Implementation Example
+
+Here is a complete, standalone implementation of a styled Gold/Silver/Bronze podium and paginated leaderboard:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SmartEarn Rewards Leaderboard</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #0f172a; padding: 24px; }
+    .container { max-width: 800px; margin: 0 auto; }
+    
+    /* Podium */
+    .podium { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 16px; align-items: end; margin-bottom: 32px; }
+    .podium-card { background: white; border-radius: 16px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .podium-card.rank-1 { border-top: 6px solid #f59e0b; padding-bottom: 32px; }
+    .podium-card.rank-2 { border-top: 6px solid #94a3b8; }
+    .podium-card.rank-3 { border-top: 6px solid #d97706; }
+    .podium-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 3px solid #f1f5f9; }
+    .podium-name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+    .podium-points { font-weight: 800; color: #004c8f; font-size: 18px; }
+    .badge-chip { display: inline-block; background: #eff6ff; color: #1d4ed8; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-bottom: 8px; }
+
+    /* Table */
+    .board-table { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .row { display: grid; grid-template-columns: 60px 1fr 100px 120px; padding: 16px 20px; align-items: center; border-bottom: 1px solid #f1f5f9; }
+    .row.header { background: #f8fafc; font-weight: 600; font-size: 13px; color: #64748b; }
+    .user-col { display: flex; align-items: center; gap: 12px; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .move-up { color: #16a34a; font-weight: 700; }
+    .move-down { color: #dc2626; font-weight: 700; }
+    .move-neutral { color: #94a3b8; }
+
+    /* Pagination */
+    .pagination { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: white; }
+    .btn-page { background: #004c8f; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-page:disabled { background: #cbd5e1; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 1. Custom Podium -->
+    <div class="podium" id="podium-root"></div>
+
+    <!-- 2. Paginated Table -->
+    <div class="board-table">
+      <div class="row header">
+        <div>Rank</div>
+        <div>Member</div>
+        <div style="text-align: center;">Movement</div>
+        <div style="text-align: right;">Total Points</div>
+      </div>
+      <div id="rows-root">Loading standings...</div>
+      <div class="pagination">
+        <div id="page-label">Showing entries</div>
+        <div>
+          <button class="btn-page" id="btn-prev" disabled>Previous</button>
+          <button class="btn-page" id="btn-next" disabled>Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CDN SDK Script -->
+  <script src="https://assets.thrico.network/leaderboard/v1/leaderboard.min.js"></script>
+
+  <script>
+    (async function () {
+      const client = window.ThricoLeaderboard.init({
+        clientId: "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff",
+        endpoint: "https://sdk.thrico.network"
+      });
+
+      const CODE = "rewards_monthly_champions";
+      let currentPage = 1;
+
+      // Render Top 3 Podium
+      async function renderPodium() {
+        const { topEntries } = await client.getTopUsers(CODE, { limit: 3 });
+        if (topEntries.length < 3) return;
+        const [p1, p2, p3] = topEntries;
+
+        document.getElementById("podium-root").innerHTML = `
+          <!-- Rank 2: Silver -->
+          <div class="podium-card rank-2">
+            <div>🥈 #2</div>
+            <img class="podium-avatar" src="${p2.user.avatarUrl}" onerror="this.src='https://cdn.thrico.network/placeholder-user.jpg'" />
+            <div class="podium-name">${p2.user.displayName}</div>
+            ${p2.user.badges?.[0] ? `<div class="badge-chip">🎖️ ${p2.user.badges[0].name}</div>` : ''}
+            <div class="podium-points">${p2.points.toLocaleString()} pts</div>
+          </div>
+          <!-- Rank 1: Gold -->
+          <div class="podium-card rank-1">
+            <div>👑 #1 Champion</div>
+            <img class="podium-avatar" src="${p1.user.avatarUrl}" onerror="this.src='https://cdn.thrico.network/placeholder-user.jpg'" />
+            <div class="podium-name">${p1.user.displayName}</div>
+            ${p1.user.badges?.[0] ? `<div class="badge-chip">🎖️ ${p1.user.badges[0].name}</div>` : ''}
+            <div class="podium-points">${p1.points.toLocaleString()} pts</div>
+          </div>
+          <!-- Rank 3: Bronze -->
+          <div class="podium-card rank-3">
+            <div>🥉 #3</div>
+            <img class="podium-avatar" src="${p3.user.avatarUrl}" onerror="this.src='https://cdn.thrico.network/placeholder-user.jpg'" />
+            <div class="podium-name">${p3.user.displayName}</div>
+            ${p3.user.badges?.[0] ? `<div class="badge-chip">🎖️ ${p3.user.badges[0].name}</div>` : ''}
+            <div class="podium-points">${p3.points.toLocaleString()} pts</div>
+          </div>
+        `;
+      }
+
+      // Render Rows
+      async function renderRows(page = 1) {
+        const res = await client.getEntries(CODE, { page, limit: 10 });
+        const rowsRoot = document.getElementById("rows-root");
+
+        rowsRoot.innerHTML = res.entries.map(e => {
+          let move = '<span class="move-neutral">-</span>';
+          if (e.movement > 0) move = `<span class="move-up">▲ +${e.movement}</span>`;
+          if (e.movement < 0) move = `<span class="move-down">▼ ${e.movement}</span>`;
+
+          return `
+            <div class="row">
+              <div style="font-weight: 700;">#${e.rank}</div>
+              <div class="user-col">
+                <img class="user-avatar" src="${e.user.avatarUrl}" onerror="this.src='https://cdn.thrico.network/placeholder-user.jpg'" />
+                <div>
+                  <div style="font-weight: 600;">${e.user.displayName}</div>
+                  ${e.user.badges?.[0] ? `<span class="badge-chip">${e.user.badges[0].name}</span>` : ''}
+                </div>
+              </div>
+              <div style="text-align: center;">${move}</div>
+              <div style="text-align: right; font-weight: 700; color: #004c8f;">${e.points.toLocaleString()} pts</div>
+            </div>
+          `;
+        }).join("");
+
+        // Update pagination
+        document.getElementById("page-label").innerText = `Showing page ${res.pagination.page} of ${res.pagination.totalPages} (${res.pagination.total} members)`;
+        document.getElementById("btn-prev").disabled = !res.pagination.hasPrev;
+        document.getElementById("btn-next").disabled = !res.pagination.hasNext;
+      }
+
+      document.getElementById("btn-prev").onclick = () => { currentPage--; renderRows(currentPage); };
+      document.getElementById("btn-next").onclick = () => { currentPage++; renderRows(currentPage); };
+
+      renderPodium();
+      renderRows(currentPage);
+    })();
+  </script>
+</body>
+</html>
+```
+
+---
+
+## 12. Production Best Practices & Troubleshooting
+
+### 1. Whitelist All Environment Origins
+Ensure all environments where developers or customers access your web app are added to `allowedDomains`:
+- `https://rewards.yourcompany.com` (Production)
+- `https://staging-rewards.yourcompany.com` (Staging)
+- `http://localhost:*` (Local development)
+
+Configure these in the Thrico Admin Portal at `/gamification/points-and-badges/settings/leaderboard` under **Allowed Domains**.
+
+### 2. Auto-Refresh Strategy
+For live dashboards, pass `autoRefreshIntervalMs: 30000` (30 seconds) into `ThricoLeaderboard.init()`. The SDK will periodically synchronize rankings without triggering full page reloads.
+
+### 3. Handle Token Expiry
+The SDK manages token acquisition and renewal automatically via `TokenManager`. You do **not** need to manually store or refresh JWTs.
+
+### 4. Handling Missing Badges
+Not every participant has unlocked a badge. Always guard badge rendering:
+```javascript
+const primaryBadge = user.badges?.[0]?.name;
+```
+
+---
+
+## 📞 Support & Enterprise SLA
+
+For questions, enterprise client onboarding, or high-throughput rate limit upgrades:
+- **Developer Documentation**: [https://docs.thrico.network](https://docs.thrico.network)
+- **API Status**: [https://status.thrico.network](https://status.thrico.network)
+- **Technical Support**: `support@thrico.network`
+- **Admin Dashboard Access**: Navigate to **Gamification** → **Points & Badges** → **Settings** → **Leaderboard** (`/gamification/points-and-badges/settings/leaderboard`)

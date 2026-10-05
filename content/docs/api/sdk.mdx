@@ -1,12 +1,87 @@
 ---
-title: "Sdk"
-description: "Learn about sdk in the Thrico API."
+title: "Thrico SDKs & Client Libraries"
+description: "Official developer SDKs, CDN client libraries, and headless UI tooling for the Thrico Platform."
 ---
 
-## Overview
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
 
-This guide covers **sdk** for the Thrico API.
+Thrico provides official client libraries and standalone browser SDKs designed for zero-overhead integration into native web and mobile platforms.
 
-## Related Articles
+---
 
-- [API Reference Overview](/docs/api)
+## Available SDKs
+
+### 1. Thrico Enterprise Leaderboard SDK (`@thrico/leaderboard-sdk`)
+
+A high-performance, zero-iframe client library for rendering real-time rankings, top performer podiums, and badge tiers directly in React, Next.js, Vue, Angular, or vanilla HTML/JS web applications.
+
+#### Installation:
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'CDN']}>
+  <Tab value="npm">
+```bash
+npm install @thrico/leaderboard-sdk
+```
+  </Tab>
+  <Tab value="pnpm">
+```bash
+pnpm add @thrico/leaderboard-sdk
+```
+  </Tab>
+  <Tab value="yarn">
+```bash
+yarn add @thrico/leaderboard-sdk
+```
+  </Tab>
+  <Tab value="CDN">
+```html
+<script src="https://assets.thrico.network/leaderboard/v1/leaderboard.min.js"></script>
+```
+  </Tab>
+</Tabs>
+
+#### Quick Example:
+
+```typescript
+import { ThricoLeaderboardClient } from "@thrico/leaderboard-sdk";
+
+const client = new ThricoLeaderboardClient({
+  clientId: "thrico_client_YOUR_CLIENT_ID",
+  endpoint: "https://sdk.thrico.network",
+  autoRefreshIntervalMs: 30000, // Optional 30s auto-sync
+});
+
+// Fetch Top 3 for Podium
+const { topEntries } = await client.getTopUsers("rewards_monthly_champions", { limit: 3 });
+
+// Fetch Paginated Standings
+const { entries, pagination } = await client.getEntries("rewards_monthly_champions", { page: 1, limit: 20 });
+```
+
+<Callout type="info">
+  **Dashboard Administration**: Manage client credentials, whitelist domains (CORS), and generate instant embed widgets in the Thrico Admin Portal at `/gamification/points-and-badges/settings/leaderboard`.
+</Callout>
+
+---
+
+## Comprehensive Guides
+
+<Cards>
+  <Card
+    title="Enterprise Headless Leaderboard Guide"
+    href="/docs/gamification/enterprise-leaderboard"
+    description="Full architectural overview, authentication, SDK methods, REST endpoints, and end-to-end HTML examples."
+  />
+  <Card
+    title="REST API Reference"
+    href="/docs/api/rest"
+    description="Explore standard REST endpoints and authentication models."
+  />
+  <Card
+    title="Authentication & API Keys"
+    href="/docs/api/authentication"
+    description="Learn how API keys, Bearer JWTs, and CORS origin whitelisting secure Thrico endpoints."
+  />
+</Cards>
