@@ -18,7 +18,7 @@ The **Thrico Enterprise Leaderboard Platform** is a zero-iframe, headless gamifi
 2. [Why Headless (Zero Iframes)?](#2-why-headless-zero-iframes)
 3. [Dashboard Configuration & Settings](#3-dashboard-configuration--settings)
 4. [Quick Start (HTML CDN Integration)](#4-quick-start-html-cdn-integration)
-5. [NPM / Module Installation](#5-npm--module-installation)
+5. [Connecting Members & User Identity (Email & User ID)](#5-connecting-members--user-identity-email--user-id)
 6. [Authentication & Domain Whitelisting](#6-authentication--domain-whitelisting)
 7. [JavaScript / TypeScript SDK Reference](#7-javascript--typescript-sdk-reference)
    - [Initialization (`ThricoLeaderboard.init`)](#initialization-thricoleaderboardinit)
@@ -27,11 +27,10 @@ The **Thrico Enterprise Leaderboard Platform** is a zero-iframe, headless gamifi
    - [Individual Rank Standing (`getMyRank`)](#individual-rank-standing-getmyrank)
    - [Leaderboard Configuration (`getConfig`)](#leaderboard-configuration-getconfig)
    - [List Active Leaderboards (`listLeaderboards`)](#list-active-leaderboards-listleaderboards)
-8. [Direct REST API Reference (Headless & Mobile Apps)](#8-direct-rest-api-reference-headless--mobile-apps)
-9. [Data Contracts & Models](#9-data-contracts--models)
-10. [Media & Image CDN Standards](#10-media--image-cdn-standards)
-11. [End-to-End Implementation Example](#11-end-to-end-implementation-example)
-12. [Production Best Practices & Troubleshooting](#12-production-best-practices--troubleshooting)
+8. [Data Contracts & Models](#8-data-contracts--models)
+9. [Media & Image CDN Standards](#9-media--image-cdn-standards)
+10. [End-to-End Implementation Example](#10-end-to-end-implementation-example)
+11. [Production Best Practices & Troubleshooting](#11-production-best-practices--troubleshooting)
 
 ---
 
@@ -150,45 +149,88 @@ Drop the Thrico Leaderboard SDK script onto any HTML webpage:
 
 ---
 
-## 5. NPM / Module Installation
+## 5. Connecting Members & User Identity (Email & User ID)
 
-For modern React, Next.js, Vue, Angular, or Node.js applications:
+Thrico provides seamless identity resolution so your client application does not need to manage complex ID synchronization. You can connect and identify members using either their **Email Address** or **User ID**.
 
-<Tabs items={['npm', 'pnpm', 'yarn']}>
-  <Tab value="npm">
-```bash
-npm install @thrico/leaderboard-sdk
+### How Member Connection Works Under the Hood:
+
 ```
-  </Tab>
-  <Tab value="pnpm">
-```bash
-pnpm add @thrico/leaderboard-sdk
+┌────────────────────────────────────────────────────────────────────────┐
+│                        Your Web App / Portal                           │
+│                                                                        │
+│   Logged-in Member: john.doe@company.com (or UUID / Customer ID)       │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ 
+                                    │ Passes Email or User ID in SDK / Header
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Thrico Identity & Ranking Engine                     │
+│                                                                        │
+│   1. Resolves Email against Tenant Directory (thricoUser)              │
+│   2. Retrieves Member Gamification Record (Points, Snapshot, Tier)     │
+│   3. Fetches Real-Time Rank & Movement from Redis ZSET                 │
+│   4. Enriches with CDN Avatars (cdn.thrico.network) & Earned Badges   │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Returns User Standing
+                                    ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│                      Enriched User Standing Data                       │
+│                                                                        │
+│   • Rank: #4                                                           │
+│   • Points: 11,450 pts                                                 │
+│   • Movement: ▲ +2 (Climbed 2 ranks since last period)                 │
+│   • Percentile: Top 98% of participants                                │
+│   • Avatar: https://cdn.thrico.network/...                             │
+│   • Badges: [ { "name": "Rising Star", "icon": "⭐" }, ... ]          │
+└────────────────────────────────────────────────────────────────────────┘
 ```
-  </Tab>
-  <Tab value="yarn">
-```bash
-yarn add @thrico/leaderboard-sdk
-```
-  </Tab>
-</Tabs>
 
-### ES Module / TypeScript Usage:
+---
 
-```typescript
-import { ThricoLeaderboardClient } from "@thrico/leaderboard-sdk";
+### Option A: Connecting by Member Email (Recommended for Web Portals)
 
-const client = new ThricoLeaderboardClient({
-  clientId: "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff",
-  endpoint: "https://sdk.thrico.network",
-  autoRefreshIntervalMs: 30000, // Optional: Poll every 30s
+Most enterprise platforms identify logged-in users by email. You can directly query user standings using their email address:
+
+```javascript
+// Initialize leaderboard
+const leaderboard = ThricoLeaderboard.init({
+  clientId: "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff"
 });
 
-async function loadLeaderboard() {
-  const { topEntries } = await client.getTopUsers("rewards_monthly_champions", { limit: 3 });
-  const { entries, pagination } = await client.getEntries("rewards_monthly_champions", { page: 1, limit: 20 });
-  return { topEntries, entries, pagination };
-}
+// Fetch current user rank by Email
+leaderboard.getCurrentUserRank("monthly_champions", {
+  email: "john.doe@yourcompany.com"
+}).then(standing => {
+  console.log("Member Rank:", standing.rank);
+  console.log("Points:", standing.points);
+  console.log("Badges:", standing.user.badges);
+});
 ```
+
+---
+
+### Option B: Connecting by User UUID
+
+If your system stores Thrico's participant UUID:
+
+```javascript
+leaderboard.getCurrentUserRank("monthly_champions", {
+  userId: "4fe5617f-22f4-42cb-8093-26bf64964cd1"
+}).then(standing => {
+  console.log("Rank:", standing.rank);
+});
+```
+
+---
+
+### Automated Profile Enrichment & Avatars
+
+When user data is returned:
+1. **Avatar URLs**: Automatically formatted to Thrico's CloudFront media CDN (`https://cdn.thrico.network/...`).
+2. **Fallback Avatars**: If no avatar was uploaded, defaults to `https://cdn.thrico.network/placeholder-user.jpg`.
+3. **Earned Badges**: Includes all unlocked badges with icons, titles, and achievement dates.
+4. **Rank Movement**: Pre-calculated movement indicators (`+3`, `-1`, or `0`) comparing current rank to the previous snapshot.
 
 ---
 
@@ -362,140 +404,7 @@ const leaderboards = await client.listLeaderboards();
 
 ---
 
-## 8. Direct REST API Reference (Headless & Mobile Apps)
-
-For native mobile applications (iOS/Swift, Android/Kotlin) or backend microservices, all endpoints can be called directly over HTTP.
-
-### Base URLs:
-- **Production Gateway**: `https://sdk.thrico.network`
-- **Local Dev Gateway**: `http://localhost:5555`
-
----
-
-### 1. Acquire Access Token
-- **Method**: `POST`
-- **Path**: `/v1/sdk/auth/token`
-- **Headers**:
-  - `Content-Type: application/json`
-  - `Origin: https://rewards.yourcompany.com`
-
-**Request Body**:
-```json
-{
-  "clientId": "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff"
-}
-```
-
-**Success Response (HTTP 200)**:
-```json
-{
-  "success": true,
-  "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIsIn...",
-    "token": "eyJhbGciOiJIUzI1NiIsIn...",
-    "tokenType": "Bearer",
-    "expiresIn": 3600,
-    "entityId": "f5827d97-eedf-4b89-b5be-535ca09d5854",
-    "clientId": "thrico_client_6c48dbdb305e38b199d6f9c9a34bedff",
-    "allowedLeaderboards": ["*"]
-  },
-  "meta": {
-    "timestamp": "2026-10-05T08:00:00.000Z",
-    "version": "v1"
-  }
-}
-```
-
----
-
-### 2. Get Top Performers (Podium)
-- **Method**: `GET`
-- **Path**: `/v1/sdk/leaderboards/:code/top?limit=3`
-- **Headers**:
-  - `Authorization: Bearer <ACCESS_TOKEN>`
-
-**Success Response (HTTP 200)**:
-```json
-{
-  "success": true,
-  "data": {
-    "leaderboard": {
-      "code": "rewards_monthly_champions",
-      "name": "SmartEarn Monthly Champions"
-    },
-    "topEntries": [
-      {
-        "rank": 1,
-        "points": 13567,
-        "previousRank": 2,
-        "movement": 1,
-        "isNew": false,
-        "user": {
-          "id": "4fe5617f-22f4-42cb-8093-26bf64964cd1",
-          "displayName": "Alex Morgan",
-          "avatarUrl": "https://cdn.thrico.network/f5827d97-eedf-4b89-b5be-535ca09d5854/user/4fe5617f-22f4-42cb-8093-26bf64964cd1/20260429-hcful.webp",
-          "badges": [
-            {
-              "id": "1336e73e-b342-4ae0-a189-ab62498fc86a",
-              "name": "Grandmaster",
-              "icon": "https://cdn.thrico.network/badges/grandmaster.png"
-            }
-          ]
-        }
-      }
-    ]
-  }
-}
-```
-
----
-
-### 3. Get Paginated Entries
-- **Method**: `GET`
-- **Path**: `/v1/sdk/leaderboards/:code/entries?page=1&limit=20`
-- **Headers**:
-  - `Authorization: Bearer <ACCESS_TOKEN>`
-
-**Success Response (HTTP 200)**:
-```json
-{
-  "success": true,
-  "data": {
-    "leaderboard": {
-      "code": "rewards_monthly_champions",
-      "name": "SmartEarn Monthly Champions",
-      "periodType": "MONTHLY"
-    },
-    "entries": [
-      {
-        "rank": 1,
-        "points": 13567,
-        "previousRank": 2,
-        "movement": 1,
-        "isNew": false,
-        "user": {
-          "id": "4fe5617f-22f4-42cb-8093-26bf64964cd1",
-          "displayName": "Alex Morgan",
-          "avatarUrl": "https://cdn.thrico.network/f5827d97-eedf-4b89-b5be-535ca09d5854/user/4fe5617f-22f4-42cb-8093-26bf64964cd1/20260429-hcful.webp",
-          "badges": [{ "id": "...", "name": "Grandmaster" }]
-        }
-      }
-    ]
-  },
-  "pagination": {
-    "page": 1,
-    "limit": 20,
-    "total": 97,
-    "totalPages": 5,
-    "hasNext": true,
-    "hasPrev": false
-  }
-}
-```
-
----
-
-## 9. Data Contracts & Models
+## 8. Data Contracts & Models
 
 ### `LeaderboardEntry`
 | Field | Type | Description |
@@ -524,7 +433,7 @@ For native mobile applications (iOS/Swift, Android/Kotlin) or backend microservi
 
 ---
 
-## 10. Media & Image CDN Standards
+## 9. Media & Image CDN Standards
 
 To ensure optimal performance and avoid cross-origin image blocking:
 
@@ -549,7 +458,7 @@ To ensure optimal performance and avoid cross-origin image blocking:
 
 ---
 
-## 11. End-to-End Implementation Example
+## 10. End-to-End Implementation Example
 
 Here is a complete, standalone implementation of a styled Gold/Silver/Bronze podium and paginated leaderboard:
 
@@ -707,7 +616,7 @@ Here is a complete, standalone implementation of a styled Gold/Silver/Bronze pod
 
 ---
 
-## 12. Production Best Practices & Troubleshooting
+## 11. Production Best Practices & Troubleshooting
 
 ### 1. Whitelist All Environment Origins
 Ensure all environments where developers or customers access your web app are added to `allowedDomains`:
