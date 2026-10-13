@@ -1,0 +1,82 @@
+---
+title: Gamification & Impact Engine Exclusions
+description: Administrative controls to exclude specific members from gamification points, badge progression, and algorithmic impact score calculations.
+---
+
+# Gamification & Impact Engine Exclusions
+
+## Overview
+
+The **Gamification & Impact Engine Exclusion Controls** allow community managers and administrators to selectively disable automated gamification rewards (points, streaks, and badges) and algorithmic impact score calculations for individual member accounts.
+
+This ensures internal staff, community moderators, integration test bots, and VIP profiles do not unfairly dominate leaderboards or distort engagement analytics.
+
+---
+
+## Key Use Cases
+
+- **Staff & Team Accounts**: Internal staff who publish announcements, reply to tickets, or moderate posts on a daily basis can be excluded to avoid accumulating disproportionate points.
+- **Bot & Automation Accounts**: System users, webhook integrations, and test accounts can be prevented from skewing leaderboard standings.
+- **Fair Community Leaderboards**: Ensures monthly member prize pools and public competitions reflect genuine member activity rather than administrative actions.
+- **Audited Compliance**: All changes to exclusion statuses are tracked in the audit trail with the responsible administrator's details and timestamps.
+
+---
+
+## Exclusion Controls Breakdown
+
+Administrators can toggle two independent controls located in the **Edit Member** form:
+
+| Control | Field Key | Default | Impact When Enabled (`ON`) |
+| :--- | :--- | :--- | :--- |
+| **Exclude from Gamification Points** | `excludeFromGamification` | `OFF` (`false`) | Halts automated point awards, activity streaks, level advancement, and badge earnings across all platform events. |
+| **Exclude from Impact Score Calculation** | `excludeFromImpactScore` | `OFF` (`false`) | Excludes member engagement events from the algorithmic Impact Score pipeline and leaderboards. |
+
+> **Preservation of Existing Data:** Enabling an exclusion does **not** delete previously earned badges, transaction logs, or historical points. It only halts future automated calculation and reward jobs.
+
+---
+
+## Step-by-Step Operator Guide
+
+### Step 1: Locate the Member Record
+1. From the main sidebar, navigate to **Members** (`/members`).
+2. Search for the member by name, username, or email address.
+3. In the member table or grid, click the action menu (**•••**) and select **Edit Member**.
+   - *Direct Route:* `/members/[id]/edit`
+
+---
+
+### Step 2: Configure Gamification & Impact Controls
+1. On the **Edit Member** screen, scroll down to the **Gamification & Impact Engine Controls** card.
+2. Toggle the switches according to your operational policy:
+   - 🏆 **Exclude from Gamification Points**: Flip to `ON` to pause points and badge accrual.
+   - 📈 **Exclude from Impact Score Calculation**: Flip to `ON` to pause algorithmic impact tracking.
+3. Click **Save Changes** in the bottom-right action dock.
+
+---
+
+### Step 3: Verify the Member's Status
+1. Navigate to the member's 360° profile console at `/members/[id]?tab=gamification`.
+2. When exclusions are active, an amber status banner appears above the summary cards:
+   > ⚠️ **Calculations Excluded / Paused**  
+   > *This member is currently excluded from automated Gamification point awards and/or Impact Score calculations.*
+
+---
+
+## Audit Trail & Security Logs
+
+Every update to member gamification exclusion settings generates an immutable record in the **Audit Logs**:
+
+- **Location**: `/members/audit-log`
+- **Action Type**: `UPDATE_MEMBER`
+- **Module**: `USERS`
+- **Logged Details**: Includes the responsible admin's name and email, timestamp, and the previous vs. updated exclusion states.
+
+---
+
+## Frequently Asked Questions (FAQ)
+
+### Can an excluded member still use the community normally?
+**Yes.** Excluded members experience zero disruptions. They can browse, post, comment, message, and attend events normally. The engine simply skips awarding points or recalculating their impact metrics in background worker queues.
+
+### Can exclusions be reversed?
+**Yes.** Return to `/members/[id]/edit`, switch the toggles back to **OFF**, and click **Save Changes**. The member will immediately resume participating in gamification and impact score updates for new events.
