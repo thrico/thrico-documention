@@ -10,3 +10,19 @@ This guide covers **rest** for the Thrico API.
 ## Related Articles
 
 - [API Reference Overview](/docs/api)
+
+
+## Media Gallery & Upload SDK Endpoints
+
+All endpoints require Enterprise client credentials headers (`X-Thrico-Client-Id` and `X-Thrico-Client-Secret`) or an origin-whitelisted Bearer token.
+
+| Method | Endpoint | Description |
+|:---|:---|:---|
+| `GET` | `/v1/sdk/media-gallery/config` | Retrieve upload policy, size limits, and daily quotas. |
+| `GET` | `/v1/sdk/media-gallery/albums` | List public destination albums. |
+| `GET` | `/v1/sdk/media-gallery/albums/:albumId/items` | Fetch items in an album with pagination. |
+| `POST` | `/v1/sdk/media-gallery/upload-url` | Generate S3 pre-signed upload URL after validating daily quotas. |
+| `POST` | `/v1/sdk/media-gallery/items` | Register uploaded photo or video in database and queue transcoding. |
+| `GET` | `/v1/sdk/media-gallery/items/:id/status` | Poll processing or moderation review status. |
+
+For detailed payloads, check the [Media Gallery Developer SDK Guide](/docs/media-gallery/developer-sdk).

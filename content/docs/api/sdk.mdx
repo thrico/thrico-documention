@@ -66,9 +66,77 @@ const { entries, pagination } = await client.getEntries("rewards_monthly_champio
 
 ---
 
+
+### 2. Thrico Media Gallery SDK & Drop-in Uploader (`@thrico/media-gallery-sdk`)
+
+A lightweight, zero-iframe client library and drop-in embed widget for uploading photos and videos directly into community albums with daily quota enforcement and pre-signed S3 direct uploads.
+
+#### Installation:
+
+<Tabs items={['npm', 'pnpm', 'yarn', 'CDN']}>
+  <Tab value="npm">
+```bash
+npm install @thrico/media-gallery-sdk
+```
+  </Tab>
+  <Tab value="pnpm">
+```bash
+pnpm add @thrico/media-gallery-sdk
+```
+  </Tab>
+  <Tab value="yarn">
+```bash
+yarn add @thrico/media-gallery-sdk
+```
+  </Tab>
+  <Tab value="CDN">
+```html
+<script src="https://sdk.thrico.network/gallery-uploader.min.js"></script>
+```
+  </Tab>
+</Tabs>
+
+#### Drop-in Widget Example:
+
+```html
+<div id="thrico-gallery-uploader"
+     data-client-id="thrico_client_YOUR_KEY"
+     data-title="Annual Alumni Gala 2026"
+     data-subtitle="Share photos and videos directly with fellow attendees.">
+</div>
+<script src="https://sdk.thrico.network/gallery-uploader.min.js"></script>
+```
+
+#### Programmatic SDK Example:
+
+```typescript
+import { ThricoMediaGalleryClient } from "@thrico/media-gallery-sdk";
+
+const gallery = new ThricoMediaGalleryClient({
+  clientId: "thrico_client_YOUR_KEY",
+  endpoint: "https://sdk.thrico.network",
+});
+
+// Upload a photo or video
+const result = await gallery.uploadFile({
+  file,
+  caption: "Annual Gala opening ceremony",
+  uploaderName: "Alex Smith",
+  uploaderEmail: "alex@example.com",
+  onProgress: (percent) => console.log(`${percent}% uploaded`),
+});
+```
+
+---
+
 ## Comprehensive Guides
 
 <Cards>
+  <Card
+    title="Media Gallery SDK & Upload API"
+    href="/docs/media-gallery/developer-sdk"
+    description="Full headless upload architecture, S3 pre-signed URLs, daily quotas, and drop-in widgets."
+  />
   <Card
     title="Enterprise Headless Leaderboard Guide"
     href="/docs/gamification/enterprise-leaderboard"

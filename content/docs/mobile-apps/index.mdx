@@ -1,25 +1,90 @@
 ---
 title: Mobile Apps
-description: Learn about Thrico's mobile applications for iOS and Android.
+description: Learn about Thrico's custom-branded native mobile applications for iOS and Android.
 ---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
 
 ## Overview
 
-Thrico provides native **Mobile Apps** for both iOS and Android, giving members on-the-go access to all community features.
+Thrico provides fully customizable, native **Mobile Apps** for both iOS and Android. Organizations can launch their own branded mobile presence on the Apple App Store and Google Play Store, giving community members real-time access to feeds, groups, events, leaderboards, and interactive discussions wherever they are.
 
-## Features
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Thrico Custom Mobile Ecosystem                       │
+│                                                                        │
+│   ┌─────────────────────┐   ┌─────────────────────┐   ┌────────────┐   │
+│   │ Client App Store    │   │ Client Google Play  │   │ Push / APN │   │
+│   │ Connect Account     │   │ Console Account     │   │ & FCM Sync │   │
+│   └──────────┬──────────┘   └──────────┬──────────┘   └─────▲──────┘   │
+│              └─────────────────────────┼────────────────────┘          │
+│                                        ▼                               │
+│                   Thrico Automated Build Pipeline                      │
+│                (Native Codebase, Code Signing & CI/CD)                 │
+│                                        │                               │
+│              ┌─────────────────────────┴─────────────────────────┐     │
+│              ▼                                                   ▼     │
+│   ┌─────────────────────┐                             ┌──────────────┐ │
+│   │   Apple App Store   │                             │ Google Play  │ │
+│   │   (iOS Production)  │                             │ (Android)    │ │
+│   └─────────────────────┘                             └──────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-- Full community access
-- Push notifications
-- Camera integration for posts and stories
-- Offline mode for basic features
-- Biometric authentication
+---
 
-## Download
+## Key Features
 
-- **iOS** — Available on the App Store
-- **Android** — Available on Google Play
+- **Custom Organization Branding**: White-labeled with your organization's logo, primary color palette, splash screens, and custom app icons.
+- **Native Performance**: Built with high-performance native rendering for fluid gestures, smooth transitions, and low latency.
+- **Push Notifications**: Automated push alerts for direct messages, mentions, announcements, event reminders, and community updates via APNs and FCM.
+- **Biometric Security**: Support for Face ID, Touch ID, and Android Biometrics for fast, secure member login.
+- **Camera & Media Hub**: Direct in-app camera access for uploading photos, videos, and stories to community feeds and media galleries.
+- **Offline Caching**: Offline reading mode for recent community feeds, cached directories, and essential discussions.
+- **Headless Gamification & Leaderboards**: Live sync with Thrico's enterprise leaderboard and badge rewards infrastructure.
+
+---
+
+## Custom Mobile App Onboarding & Regional Guides
+
+To publish your organization's customized mobile app under your own brand, you will need to establish your organization's developer accounts. Thrico handles application configuration, build generation, cryptographic signing, and store submission.
+
+Choose the setup guide that matches your organization's jurisdiction:
+
+<Cards>
+  <Card
+    title="Developer Account Creation Guide"
+    href="/docs/mobile-apps/developer-accounts"
+  >
+    Global step-by-step guide to creating and verifying Google Play Console and Apple Developer accounts.
+  </Card>
+  <Card
+    title="India Client Setup Guide"
+    href="/docs/mobile-apps/india-client-guide"
+  >
+    Specialized guide for India-registered entities covering MCA, PAN, GST, and RBI compliance.
+  </Card>
+  <Card
+    title="UAE Client Setup Guide"
+    href="/docs/mobile-apps/uae-client-guide"
+  >
+    Specialized guide for UAE-based organizations with trade licence and regional compliance instructions.
+  </Card>
+</Cards>
+
+---
+
+## Publishing Lifecycle
+
+The typical mobile app rollout proceeds in five stages:
+
+1. **Account Registration & Verification**: The client creates and verifies organization developer accounts on Google Play Console and Apple Developer Program.
+2. **Access Delegation**: The client invites Thrico's deployment specialists through role-based delegation (no passwords shared).
+3. **Branding & Build Configuration**: Thrico configures your entity's branding assets, endpoints, and code signing credentials.
+4. **Internal Testing & Review**: Build distribution via TestFlight (iOS) and Google Play Internal Testing for your team to test and sign off.
+5. **Store Submission & Approval**: Thrico submits the release for store review, managing the approval cycle through to public launch.
 
 <Callout type="info">
-  Detailed mobile app documentation is being expanded.
+  **Thrico — Your Community. Your Brand. Your App.**
 </Callout>

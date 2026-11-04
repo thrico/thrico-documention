@@ -1,0 +1,296 @@
+---
+title: Media Gallery Headless SDK & Upload API
+description: Zero-iframe, headless media upload infrastructure. Embed live photo and video uploaders into external websites, event portals, and mobile applications with automated S3 pre-signed URLs, daily rate limits, and admin moderation.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+The **Thrico Media Gallery Headless SDK** is a zero-iframe client library and embeddable widget that enables third-party web applications, event microsites, and alumni portals to securely upload photos and videos directly into your Thrico community gallery.
+
+It provides automated client credential authentication, pre-signed AWS S3 direct uploads, automated cloud video transcoding, per-uploader daily rate limit enforcement, and optional admin moderation.
+
+---
+
+## Table of Contents
+
+1. [Architectural Overview](#1-architectural-overview)
+2. [Why Direct S3 Pre-Signed Uploads?](#2-why-direct-s3-pre-signed-uploads)
+3. [Dashboard Configuration & Policy Controls](#3-dashboard-configuration--policy-controls)
+4. [Quick Start (Drop-in HTML Widget)](#4-quick-start-drop-in-html-widget)
+5. [Programmatic TypeScript / JavaScript SDK](#5-programmatic-typescript--javascript-sdk)
+6. [Daily Upload Quotas & Abuse Prevention](#6-daily-upload-quotas--abuse-prevention)
+7. [Direct REST API Reference](#7-direct-rest-api-reference)
+8. [Content Moderation Workflow](#8-content-moderation-workflow)
+
+---
+
+## 1. Architectural Overview
+
+1. **Client Request**: The external web application or embed widget requests a pre-signed S3 upload URL with media metadata and uploader info.
+2. **Quota & Policy Verification**: Thrico SDK edge gateway checks the uploader's daily limits in PostgreSQL and verifies size/type policies.
+3. **Direct S3 Upload**: The browser streams the file directly to S3 using the pre-signed URL with live percentage progress tracking.
+4. **Registration**: The client calls Thrico's registration endpoint to record the item and queue videos for background HLS transcoding.
+5. **Publishing / Moderation**: The photo/video is published to the target album immediately, or sent to the Admin Moderation Queue if moderation is active.
+
+---
+
+## 2. Why Direct S3 Pre-Signed Uploads?
+
+Traditional web upload APIs proxy huge video files through application servers, creating memory pressure, long socket hold times, and CPU spikes.
+
+The Thrico Media Gallery SDK utilizes **Pre-Signed S3 Direct Uploads**:
+- **Zero Server Memory Overhead**: Media streams directly from client browser to AWS S3.
+- **Fast Resumable Transfers**: Bypasses reverse proxies and application bottlenecks.
+- **Pre-validated Permissions**: S3 verifies the cryptographically signed temporary URL, size caps, and content type.
+- **Automated Video Pipelines**: Background workers receive SQS events to transcode videos into multi-bitrate HLS streams.
+
+---
+
+## 3. Dashboard Configuration & Policy Controls
+
+Configure your third-party upload settings in the **Thrico Entity Dashboard** at:
+`Media Gallery -> Developer & SDK` (`/media-gallery/developer`).
+
+| Configuration Option | Description | Default |
+|:---|:---|:---|
+| **Allow Third-Party Uploads** | Master toggle enabling or disabling external submissions. | Enabled |
+| **Require Moderation** | When enabled, submissions require admin approval before becoming public. | Disabled |
+| **Default Destination Album** | The primary album where uploads are stored if none is specified. | First Active Album |
+| **Album Selection** | Allow external users to select target albums from allowed list. | Enabled |
+| **Allowed Media Types** | Restrict to ALL, IMAGE_ONLY, or VIDEO_ONLY. | ALL |
+| **Max Image Size** | Maximum allowed file size for images (MB). | 10 MB |
+| **Max Video Size** | Maximum allowed file size for videos (MB). | 100 MB |
+| **Max Video Duration** | Maximum video duration in seconds. | 120 seconds |
+| **Max Daily Uploads (Per User)** | Daily limit per unique uploader email / identifier. | 10 uploads/day |
+| **Max Daily Uploads (Community)** | Global daily ceiling for all external uploads. | 200 uploads/day |
+| **Require Uploader Info** | Mandates name and email before allowing upload. | Disabled |
+| **Require Caption** | Mandates a description/caption for each media item. | Disabled |
+
+---
+
+## 4. Quick Start (Drop-in HTML Widget)
+
+To embed the turnkey upload widget into any HTML page, React site, or event portal, add a target container and include the CDN script:
+
+<Tabs items={['HTML Embed', 'React / Next.js']}>
+  <Tab value="HTML Embed">
+```html
+<!-- 1. Drop-in Container -->
+<div id="thrico-gallery-uploader"
+     data-client-id="thrico_client_YOUR_KEY"
+     data-title="Annual Alumni Gala 2026"
+     data-subtitle="Share photos and videos directly with fellow attendees.">
+</div>
+
+<!-- 2. Thrico Gallery CDN Script (< 20 KB) -->
+<script src="https://sdk.thrico.network/gallery-uploader.min.js"></script>
+```
+  </Tab>
+  <Tab value="React / Next.js">
+```tsx
+import { useEffect } from "react";
+
+export function GalleryUploadSection() {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://sdk.thrico.network/gallery-uploader.min.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <div
+      id="thrico-gallery-uploader"
+      data-client-id="thrico_client_YOUR_KEY"
+      data-title="Community Media Upload"
+      data-subtitle="Upload photos & videos to our gallery"
+      data-theme="light"
+    />
+  );
+}
+```
+  </Tab>
+</Tabs>
+
+### Widget Data Attributes
+
+- `data-client-id`: *(Required)* Your entity's client credentials key.
+- `data-album-id`: *(Optional)* Lock the widget to a specific album ID.
+- `data-title`: Custom header title.
+- `data-subtitle`: Custom explanatory subtext.
+- `data-theme`: `"light"` or `"dark"`.
+
+---
+
+## 5. Programmatic TypeScript / JavaScript SDK
+
+For custom interfaces, use the headless client from `@thrico/media-gallery-sdk`:
+
+### Installation:
+
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tab value="pnpm">
+```bash
+pnpm add @thrico/media-gallery-sdk
+```
+  </Tab>
+  <Tab value="npm">
+```bash
+npm install @thrico/media-gallery-sdk
+```
+  </Tab>
+  <Tab value="yarn">
+```bash
+yarn add @thrico/media-gallery-sdk
+```
+  </Tab>
+</Tabs>
+
+### Uploading a Photo or Video:
+
+```typescript
+import { ThricoMediaGalleryClient } from "@thrico/media-gallery-sdk";
+
+// Initialize Client
+const gallery = new ThricoMediaGalleryClient({
+  clientId: "thrico_client_YOUR_CLIENT_ID",
+  clientSecret: "thrico_secret_YOUR_SECRET", // If authenticating server-side
+  endpoint: "https://sdk.thrico.network",
+});
+
+// 1. Fetch Public Configuration & Limits
+const config = await gallery.getConfig();
+console.log("Daily upload limit:", config.quotas.maxDailyUploadsPerUploader);
+
+// 2. Fetch Available Destination Albums
+const albums = await gallery.getAlbums();
+
+// 3. Upload File with Real-time Progress Tracking
+const fileInput = document.getElementById("file-picker") as HTMLInputElement;
+const file = fileInput.files[0];
+
+const result = await gallery.uploadFile({
+  file,
+  albumId: albums[0].id,
+  caption: "Class of 2016 Reunion group photo!",
+  uploaderName: "Jane Doe",
+  uploaderEmail: "jane@example.com",
+  externalUserId: "user_12345",
+  onProgress: (percent) => {
+    console.log(`Upload Progress: ${percent}%`);
+  },
+});
+
+console.log("Uploaded Media Item:", result.item.id);
+console.log("Status:", result.item.status); // "READY" or "PENDING_APPROVAL"
+```
+
+---
+
+## 6. Daily Upload Quotas & Abuse Prevention
+
+To ensure security and prevent runaway storage consumption, the system enforces a **two-tier daily rate limit**:
+
+1. **Per-Uploader Limit (`maxDailyUploadsPerUploader`)**:
+   - Tracked across the current calendar day (UTC) by matching `external_user_id` or `external_uploader_email`.
+   - If an uploader attempts to exceed this cap, the edge gateway rejects the pre-signed URL request with HTTP `429 Too Many Requests`.
+2. **Community Global Limit (`maxDailyUploadsTotal`)**:
+   - Caps the collective number of third-party uploads across all external sources in a single day.
+   - Prevents automated DDoS or accidental mass script uploads.
+
+---
+
+## 7. Direct REST API Reference
+
+All requests must include client authentication headers:
+```http
+X-Thrico-Client-Id: thrico_client_YOUR_KEY
+X-Thrico-Client-Secret: thrico_secret_YOUR_SECRET
+```
+*(Or `Authorization: Bearer <TOKEN>` for client-side origin-whitelisted requests)*.
+
+### 1. Get Gallery Configuration
+```http
+GET /v1/sdk/media-gallery/config
+```
+**Response (200 OK):**
+```json
+{
+  "allowThirdPartyUploads": true,
+  "requireModeration": false,
+  "allowedMediaTypes": "ALL",
+  "limits": {
+    "maxImageSizeMb": 10,
+    "maxVideoSizeMb": 100,
+    "maxVideoDurationSeconds": 120
+  },
+  "quotas": {
+    "maxDailyUploadsPerUploader": 10,
+    "maxDailyUploadsTotal": 200
+  },
+  "requirements": {
+    "requireUploaderInfo": true,
+    "requireCaption": false
+  }
+}
+```
+
+### 2. Request Pre-Signed Upload URL
+```http
+POST /v1/sdk/media-gallery/upload-url
+Content-Type: application/json
+
+{
+  "fileName": "ceremony.mp4",
+  "fileSize": 45000000,
+  "contentType": "video/mp4",
+  "albumId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "uploaderEmail": "jane@example.com",
+  "externalUserId": "ext_987",
+  "durationSeconds": 45
+}
+```
+**Response (200 OK):**
+```json
+{
+  "uploadUrl": "https://s3.amazonaws.com/thrico-media-bucket/...",
+  "fileKey": "entities/cd4e.../media-gallery/2026/10/ceremony.mp4",
+  "publicUrl": "https://cdn.thrico.network/media-gallery/ceremony.mp4",
+  "type": "VIDEO",
+  "expiresInSeconds": 900
+}
+```
+
+### 3. Register Uploaded Item
+```http
+POST /v1/sdk/media-gallery/items
+Content-Type: application/json
+
+{
+  "albumId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "url": "https://cdn.thrico.network/media-gallery/ceremony.mp4",
+  "type": "VIDEO",
+  "caption": "Commencement Ceremony Highlights",
+  "uploaderName": "Jane Doe",
+  "uploaderEmail": "jane@example.com",
+  "externalUserId": "ext_987",
+  "duration": 45
+}
+```
+
+---
+
+## 8. Content Moderation Workflow
+
+When **Require Moderation** is enabled:
+1. External submissions are saved with status `PENDING_APPROVAL` (or `PROCESSING` for videos).
+2. The submission is placed in the **Submissions Queue** (`/media-gallery/developer`).
+3. Community administrators can inspect the preview, author info, and click **Approve** or **Reject**.
+4. Upon approval, the item's status transitions to `READY` and becomes immediately visible to all community members in the designated album.

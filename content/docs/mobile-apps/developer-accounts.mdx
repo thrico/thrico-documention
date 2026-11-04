@@ -1,0 +1,341 @@
+---
+title: Developer Account Creation Guide
+description: Step-by-step guide to creating and verifying Google Play Console and Apple Developer accounts for publishing your custom-branded Thrico mobile app.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+# Mobile App Developer Account Creation Guide
+
+To publish your organization's customized mobile application through the **Google Play Store** and **Apple App Store**, you must create two official developer accounts:
+
+1. **Google Play Console Developer Account** — For Android applications.
+2. **Apple Developer Program Account** — For iOS applications.
+
+Both accounts should preferably be registered in the **organization's legal name** rather than an individual's name. These accounts establish your organization's direct legal ownership of its mobile applications on the respective application stores.
+
+Thrico will assist with application configuration, branding, build generation, cryptographic code signing, and store submission.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                      Mobile App Publishing Model                       │
+│                                                                        │
+│   ┌──────────────────────────────────────────────────────────────┐     │
+│   │                 Client Organization Ownership                │     │
+│   │  • Google Play Console Account (Organization)                │     │
+│   │  • Apple Developer Program Account (Legal Entity)            │     │
+│   │  • D-U-N-S Number & Business Verification                    │     │
+│   └──────────────────────────────┬───────────────────────────────┘     │
+│                                  │ Delegated Role-Based Access         │
+│                                  │ (No Passwords / No 2FA Shared)      │
+│                                  ▼                                     │
+│   ┌──────────────────────────────────────────────────────────────┐     │
+│   │                     Thrico Build Pipeline                    │     │
+│   │  • Custom White-Label App Configuration & Assets             │     │
+│   │  • Production Build Generation (AAB & IPA)                   │     │
+│   │  • Automated Signing & Release Deployment                    │     │
+│   └───────────────┬──────────────────────────────┬───────────────┘     │
+│                   │                              │                     │
+│                   ▼                              ▼                     │
+│   ┌──────────────────────────────┐ ┌──────────────────────────────┐   │
+│   │      Google Play Store       │ │       Apple App Store        │   │
+│   │   (Android App Production)   │ │    (iOS App Production)      │   │
+│   └──────────────────────────────┘ └──────────────────────────────┘   │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+<Callout type="info">
+  **Regional Guides Available:**
+  - Registered in India? See the [India Client Developer Account Setup Guide](/docs/mobile-apps/india-client-guide) for MCA, PAN, GST, and RBI compliance details.
+  - Registered in the UAE? See the [UAE Client Developer Account Setup Guide](/docs/mobile-apps/uae-client-guide) for UAE trade licence and regional verification guidelines.
+</Callout>
+
+---
+
+## 1. Android – Google Play Console Developer Account
+
+Follow these steps to register your organization's Google Play Console developer account.
+
+<Steps>
+<Step>
+### Step 1: Create a Google Account
+
+If your organization already has an official Google account (e.g., Google Workspace), you can use it. Otherwise, create a dedicated account using your organization's official email address.
+
+- **Website**: [https://accounts.google.com/signup](https://accounts.google.com/signup)
+
+<Callout type="warn">
+  **Recommended:** Use an official company email address (such as `developer@yourdomain.com` or `it@yourdomain.com`) rather than a personal Gmail account.
+</Callout>
+</Step>
+
+<Step>
+### Step 2: Register for Google Play Console
+
+Visit the Google Play Console signup portal:
+
+- **Website**: [https://play.google.com/console/signup](https://play.google.com/console/signup)
+
+1. Sign in using your organization's official Google account.
+2. Review and accept the **Google Play Developer Distribution Agreement**.
+3. Select the appropriate account type (**Organization**).
+4. Complete the developer registration form.
+5. Pay the one-time registration fee (currently **US$25**, subject to applicable taxes and payment terms).
+</Step>
+
+<Step>
+### Step 3: Select Account Type (Organization Account)
+
+Always select **Organization Account** (Recommended). Use this option when the application belongs to a registered company, educational institution, association, or eligible corporate entity.
+
+Google will require the following information during registration:
+- **Legal organization name** (matching official registration records)
+- **Registered business address**
+- **Organization contact information** (phone and email)
+- **Organization official website**
+- **D-U-N-S Number** (Dun & Bradstreet identifier)
+- **Identity and organization verification documents**
+
+<Callout type="info">
+  Ensure all information submitted exactly matches your organization's official legal records and Dun & Bradstreet listing.
+</Callout>
+</Step>
+
+<Step>
+### Step 4: Complete Organization Verification
+
+Google requires complete organization identity verification before you can publish applications:
+
+- Organization registration documents / certificate of incorporation
+- Verified D-U-N-S Number
+- Authorized representative identification details
+- Identity verification of the account manager
+- Official business contact verification (email and SMS OTP verification)
+
+Complete all verification requests directly within the Google Play Console notification banners.
+</Step>
+
+<Step>
+### Step 5: Provide Access to Thrico
+
+Once the account is created and organization verification is complete, grant access to the Thrico implementation team:
+
+1. Open the [Google Play Console](https://play.google.com/console).
+2. Navigate to **Users and permissions** in the left menu.
+3. Select **Invite new users**.
+4. Enter the email address provided by your Thrico implementation specialist.
+5. Assign the permissions required for application setup, release management, and store submission:
+   - *App access*: All apps or the specific Thrico-powered application
+   - *Permissions*: Release management, store listing creation, and build uploads
+6. Click **Send invitation**.
+
+<Callout type="error">
+  **Security Warning:** Do **not** share your Google account password or two-step verification codes with Thrico. Always invite Thrico through the official **Users and permissions** delegation panel.
+</Callout>
+
+Thrico will use this authorized delegated access to configure, test, sign, and publish your custom-branded Android application.
+</Step>
+</Steps>
+
+---
+
+## 2. iOS – Apple Developer Account
+
+Apple requires all custom-branded enterprise applications to be distributed from the client's own Apple Developer Program account.
+
+<Steps>
+<Step>
+### Step 1: Create an Apple Account
+
+Visit the Apple ID portal:
+
+- **Website**: [https://account.apple.com/](https://account.apple.com/)
+
+1. Select **Create Your Apple Account**.
+2. Enter your organization's official work email address.
+3. Provide the required personal information for the authorized representative.
+4. Verify your email address and phone number.
+5. Enable **Two-Factor Authentication (2FA)**.
+
+<Callout type="info">
+  The Apple Account must be controlled by an authorized person within your organization who has legal signing authority.
+</Callout>
+</Step>
+
+<Step>
+### Step 2: Enroll in the Apple Developer Program
+
+Visit the enrollment portal:
+
+- **Website**: [https://developer.apple.com/programs/enroll/](https://developer.apple.com/programs/enroll/)
+
+1. Sign in using your organization's Apple Account.
+2. Click **Start Your Enrollment**.
+3. Select **Organization** as the entity type.
+4. Enter your organization's legal entity details.
+5. Complete the required identity verification.
+</Step>
+
+<Step>
+### Step 3: Organization Requirements
+
+Apple requires the following credentials to approve organization enrollment:
+
+| Requirement | Details |
+|---|---|
+| **Legal Entity Name** | Registered organization name (matching legal records) |
+| **D-U-N-S Number** | 9-digit Dun & Bradstreet business identification number |
+| **Organization Website** | Official, public, active company website |
+| **Work Email** | Organization domain email address (free webmail not accepted) |
+| **Legal Authority** | Authorized representative with power to bind the organization legally |
+| **Contact Details** | Direct representative contact information |
+| **Phone Number** | Verified organization contact phone number |
+
+<Callout type="warn">
+  **Important:** Apple organization enrollment requires a registered legal entity (such as LLC, Corp, Ltd, or Inc). A trade name, fictitious business name, DBA, or branch office alone generally does not qualify.
+</Callout>
+</Step>
+
+<Step>
+### Step 4: Obtain or Verify Your D-U-N-S Number
+
+If your organization does not already have a D-U-N-S Number, look up or request one through Apple's designated Dun & Bradstreet lookup tool:
+
+- **Website**: [https://developer.apple.com/enroll/duns-lookup/](https://developer.apple.com/enroll/duns-lookup/)
+
+You must ensure that your organization's legal name, registered address, and jurisdiction match the information registered with Dun & Bradstreet. Please allow several business days for Dun & Bradstreet verification and database syncing to Apple.
+</Step>
+
+<Step>
+### Step 5: Pay Apple Developer Membership Fee
+
+After Apple completes its review and verification:
+
+1. Return to the [Apple Developer enrollment portal](https://developer.apple.com/programs/enroll/).
+2. Review and accept the **Apple Developer Program License Agreement**.
+3. Pay the annual membership fee (standard rate: **US$99 per year**, subject to applicable local taxes and regional pricing).
+4. Wait for Apple to activate your membership (usually 24–48 hours).
+</Step>
+
+<Step>
+### Step 6: Provide Access to Thrico via App Store Connect
+
+Once your developer membership is active:
+
+1. Sign in to [App Store Connect](https://appstoreconnect.apple.com/).
+2. Navigate to **Users and Access**.
+3. Click the **(+) Add User** button.
+4. Enter the email address and name provided by your Thrico implementation specialist.
+5. Assign appropriate permissions:
+   - **Role**: *Admin* or *App Manager*
+   - **Developer Resources**: Ensure access to *Certificates, Identifiers & Profiles* is enabled for code signing.
+6. Click **Invite**.
+
+<Callout type="error">
+  **Security Warning:** The Account Holder should always retain primary ownership of the account. Never share your Apple Account password or two-factor authentication SMS/prompts.
+</Callout>
+</Step>
+</Steps>
+
+---
+
+## 3. Information to Share with Thrico
+
+Once both accounts are established and verified, share the following checklist details with your Thrico onboarding representative:
+
+<Tabs items={['Android (Google Play)', 'iOS (Apple App Store)']}>
+  <Tab value="Android (Google Play)">
+    - [ ] Google Play Console developer account registered under organization name
+    - [ ] Identity and business verification completed
+    - [ ] Authorized Thrico user invitation sent via *Users and permissions*
+    - [ ] Confirmed organization developer display name
+  </Tab>
+  <Tab value="iOS (Apple App Store)">
+    - [ ] Apple Developer Account registered and activated
+    - [ ] Organization enrollment completed and approved
+    - [ ] **Apple Team ID** (found under *Account → Membership details*)
+    - [ ] App Store Connect user invitation sent with App Manager/Admin rights
+    - [ ] Authorized certificates/signing access configured
+  </Tab>
+</Tabs>
+
+---
+
+## 4. Account Ownership & Responsibilities
+
+The following matrix clarifies the division of responsibilities between your organization (Client) and Thrico:
+
+| Activity | Client Organization | Thrico Team |
+|---|:---:|:---:|
+| **Google Play Developer Account Creation** | **Responsible** | Guidance |
+| **Apple Developer Account Creation** | **Responsible** | Guidance |
+| **Developer Membership Fee Payments** | **Responsible** | Not applicable |
+| **Organization Legal Verification & D-U-N-S** | **Responsible** | Assistance |
+| **Application Branding Assets (Logos, Colors, Splash)** | Provide assets | Configure |
+| **Android Application Build (AAB Generation)** | — | **Responsible** |
+| **iOS Application Build (IPA Generation)** | — | **Responsible** |
+| **Cryptographic Signing & Provisioning Profiles** | Authorize access | Configure |
+| **Store Listing Preparation (Descriptions, Keywords)** | Review and approve | Assist |
+| **Store Submission & Release Management** | Authorize | Manage |
+| **Final App Store / Play Store Review Approval** | — | Subject to Apple & Google review |
+
+---
+
+## 5. Important Compliance & Security Guidelines
+
+1. **Client Ownership**: Both developer accounts must be owned directly by the client organization. The client retains 100% legal ownership of its developer accounts, publisher identity, and published mobile applications.
+2. **Credential Security**: Passwords, 2FA credentials, and SMS verification codes must **never** be shared with Thrico. All collaboration occurs via sanctioned role-based user invitations.
+3. **Authorized Access**: Thrico requires invited user permissions to perform application configuration, test releases (TestFlight and Google Play Internal Testing), and production deployments.
+4. **Independent Review Policies**: Both Google Play and the Apple App Store operate independent application review processes. Approval timelines are governed solely by Google and Apple policies.
+5. **Timeline Expectations**: Organization verification (especially D-U-N-S matching and Apple identity calls) can take between 3 to 10 business days. We recommend initiating this process as early as possible.
+6. **Membership Renewals**: Annual Apple Developer Program renewals ($99/year) must be maintained in good standing by the client to ensure continuous app availability and future feature updates.
+
+---
+
+## 6. Final Onboarding Checklist
+
+Use this interactive checklist to track your onboarding readiness:
+
+### Google Play Console (Android)
+- [ ] Official Google account created with corporate email
+- [ ] Organization developer account registered
+- [ ] One-time registration fee ($25) paid
+- [ ] Organization and identity verification completed
+- [ ] Developer account fully activated
+- [ ] Thrico invited through **Users and permissions**
+
+### Apple Developer Program (iOS)
+- [ ] Official Apple Account created with corporate email
+- [ ] Two-factor authentication (2FA) enabled
+- [ ] D-U-N-S Number verified with Dun & Bradstreet
+- [ ] Organization enrollment submitted and approved
+- [ ] Annual membership fee ($99) paid
+- [ ] Apple Developer membership fully activated
+- [ ] Apple Team ID shared with Thrico
+- [ ] Thrico invited through **App Store Connect**
+
+---
+
+### What's Next?
+
+Once both developer accounts are active and the required access has been granted, Thrico will immediately initiate your custom mobile application configuration, asset branding, and production build generation.
+
+<Cards>
+  <Card title="India Setup Guide" href="/docs/mobile-apps/india-client-guide">
+    Specific instructions for Indian legal entities, MCA, GST, and RBI payments.
+  </Card>
+  <Card title="UAE Setup Guide" href="/docs/mobile-apps/uae-client-guide">
+    Specific guidelines for UAE-registered entities and trade licence requirements.
+  </Card>
+  <Card title="Mobile Apps Overview" href="/docs/mobile-apps">
+    Explore the full feature capabilities of Thrico's native iOS and Android apps.
+  </Card>
+</Cards>
+
+<Callout type="info">
+  **Thrico — Your Community. Your Brand. Your App.**
+</Callout>
+

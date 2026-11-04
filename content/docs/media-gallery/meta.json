@@ -1,0 +1,9 @@
+{
+  "title": "Media Gallery",
+  "pages": [
+    "index",
+    "developer-sdk",
+    "albums",
+    "moderation"
+  ]
+}

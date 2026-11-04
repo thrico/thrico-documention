@@ -1,4 +1,9 @@
 {
   "title": "Mobile Apps",
-  "pages": ["index"]
+  "pages": [
+    "index",
+    "developer-accounts",
+    "india-client-guide",
+    "uae-client-guide"
+  ]
 }
