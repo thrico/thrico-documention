@@ -58,6 +58,20 @@ export async function generateMetadata(props: {
       description: page.data.description,
       type: 'article',
       url: `https://docs.thrico.com/docs/${(params.slug ?? []).join('/')}`,
+      images: [
+        {
+          url: '/thrico-logo.svg',
+          width: 728,
+          height: 251,
+          alt: `${page.data.title} - Thrico Documentation`,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+      images: ['/thrico-logo.svg'],
     },
   };
 }

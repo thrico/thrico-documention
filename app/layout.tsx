@@ -18,6 +18,14 @@ export const metadata: Metadata = {
     url: 'https://docs.thrico.com',
     siteName: 'Thrico Docs',
     type: 'website',
+    images: [
+      {
+        url: '/thrico-logo.svg',
+        width: 728,
+        height: 251,
+        alt: 'Thrico Logo',
+      },
+    ],
   },
   icons: {
     icon: '/favicon.ico',
@@ -27,6 +35,7 @@ export const metadata: Metadata = {
     title: 'Thrico Documentation',
     description:
       'The official documentation portal for the Thrico platform.',
+    images: ['/thrico-logo.svg'],
   },
   robots: {
     index: true,
