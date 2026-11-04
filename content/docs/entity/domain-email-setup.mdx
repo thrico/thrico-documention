@@ -1,0 +1,306 @@
+---
+title: Entity Domain & Custom Email Setup Guide
+description: Configure your entity's default Thrico subdomain, secondary website domain, and verified custom email-sending domain before going live on the Thrico platform.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Card, Cards } from 'fumadocs-ui/components/card';
+
+## Overview
+
+During entity setup in Thrico, two **website domain configurations** are required:
+
+1. **Default Thrico Subdomain** — Automatically assigned to every entity.
+2. **Secondary Website Domain** — The entity must configure a subdomain of its existing domain, or connect a newly purchased domain.
+
+Both domains must be configured during entity onboarding.
+
+<Callout type="info">
+  The Thrico administration dashboard remains separate from the customer-facing website:
+  - **Administration dashboard:** `https://dashboard.thrico.com`
+  - **Default Thrico subdomain:** `https://brand.thrico.community` (example)
+  - **Secondary website domain:** `https://community.brand.com` or `https://brandcommunity.com` (examples)
+</Callout>
+
+---
+
+## Domain Architecture
+
+| Purpose | Example |
+|---|---|
+| Thrico Administration Dashboard | `dashboard.thrico.com` |
+| Default Thrico Subdomain | `brand.thrico.community` |
+| Secondary Website Domain | `community.brand.com` or `brandcommunity.com` |
+| Email-Sending Domain | `brand.com` or `brandcommunity.com` |
+
+Both website domains must be associated with the correct entity.
+
+---
+
+## 1. Default Thrico Subdomain
+
+Every entity receives a subdomain under `*.thrico.community`.
+
+```
+Example: https://brand.thrico.community
+```
+
+- Automatically assigned during entity creation.
+- Managed entirely by Thrico — no customer DNS action required.
+- Routing and HTTPS are configured by Thrico.
+- Remains assigned to the entity even after a secondary domain is connected.
+
+---
+
+## 2. Secondary Website Domain
+
+Every entity must configure a secondary website domain during setup. Choose one of the two approaches below:
+
+<Tabs items={['Option A: Existing Domain', 'Option B: New Domain']}>
+  <Tab value="Option A: Existing Domain">
+    If your organization owns `brand.com`, configure a subdomain such as:
+
+    ```
+    https://community.brand.com
+    ```
+
+    - You retain full ownership of `brand.com`.
+    - You add the DNS records supplied by Thrico to your existing domain registrar.
+    - No transfer of domain ownership is required.
+  </Tab>
+  <Tab value="Option B: New Domain">
+    Purchase a dedicated domain such as:
+
+    ```
+    https://brandcommunity.com
+    ```
+
+    - You own the new domain outright.
+    - You add the DNS records supplied by Thrico to the new domain's DNS settings.
+    - Useful for organizations that want a standalone community presence.
+  </Tab>
+</Tabs>
+
+<Callout type="warn">
+  The secondary website domain is **required**. Entity setup cannot be marked complete without a verified secondary domain.
+</Callout>
+
+---
+
+## 3. Entity Setup Workflow
+
+<Steps>
+<Step>
+### Create the Entity
+Create the entity from the [Thrico Dashboard](https://dashboard.thrico.com) under **Entity → Create Entity**.
+</Step>
+
+<Step>
+### Default Subdomain Assignment
+The default Thrico subdomain (e.g., `brand.thrico.community`) is automatically assigned and immediately active. No action required.
+</Step>
+
+<Step>
+### Configure a Secondary Website Domain
+Navigate to **Settings → Domains** and configure your secondary website domain:
+- Select an existing-domain subdomain, or
+- Connect a newly purchased domain.
+</Step>
+
+<Step>
+### Add Required DNS Records
+Thrico will display the exact DNS records to add at your domain registrar. Add all records shown in the dashboard.
+</Step>
+
+<Step>
+### Verify the Secondary Domain
+Return to the domain settings and click **Verify DNS Records**. Thrico will validate domain ownership.
+</Step>
+
+<Step>
+### Enable HTTPS
+Once DNS verification passes, Thrico automatically provisions a TLS/SSL certificate and enables HTTPS.
+</Step>
+
+<Step>
+### Confirm Both Domains
+Verify that both the default subdomain and the secondary domain correctly route to your entity. Mark domain configuration complete.
+</Step>
+</Steps>
+
+---
+
+## 4. DNS Configuration
+
+Thrico provides the required DNS records for the secondary website domain. Depending on the configuration, records may include:
+
+| Record Type | Purpose |
+|---|---|
+| `CNAME` | Points a subdomain to the destination supplied by Thrico |
+| `A` or `AAAA` | Used when an IP address is required (apex/root domains) |
+| `TXT` | Verifies domain ownership |
+
+### Subdomain Configuration (Recommended)
+
+For a subdomain such as `community.brand.com`:
+
+| Record Type | Host / Name | Target / Value | TTL |
+|:---|:---|:---|:---|
+| `CNAME` | `community` | `cname.thrico.app` *(as specified in dashboard)* | 300 |
+
+### Root / Apex Domain Configuration
+
+For an apex domain such as `brandcommunity.com`:
+
+| Record Type | Host / Name | Target / Value | TTL |
+|:---|:---|:---|:---|
+| `A` | `@` | *Designated Thrico IP Address* | 300 |
+| `CNAME` | `www` | `cname.thrico.app` | 300 |
+
+<Callout type="info">
+  After adding DNS records, allow time for DNS propagation (typically 5 minutes to 48 hours depending on your registrar and TTL settings). The default Thrico subdomain does not require any customer-managed DNS.
+</Callout>
+
+---
+
+## 5. Custom Email Setup
+
+Each entity must configure its own **verified email-sending domain** before sending customer-facing emails through Thrico.
+
+<Callout type="error">
+  **Email Policy:** Emails must **never** be sent using a Thrico-owned domain. All customer-facing emails must use the entity's own verified sending domain.
+</Callout>
+
+### Email Sender Examples
+
+| Website Domain | Example Sender Address |
+|---|---|
+| `community.brand.com` | `notifications@brand.com` |
+| `community.brand.com` | `notifications@mail.brand.com` |
+| `brandcommunity.com` | `notifications@brandcommunity.com` |
+| `brandcommunity.com` | `notifications@mail.brandcommunity.com` |
+
+The email-sending domain can be your main company domain or a dedicated email subdomain, provided the email provider supports and verifies it.
+
+### Email Setup Steps
+
+<Steps>
+<Step>
+### Select Email-Sending Domain
+Choose a customer-owned domain or subdomain as the verified email-sending domain (e.g., `brand.com` or `mail.brand.com`).
+</Step>
+
+<Step>
+### Configure Email Delivery Provider
+Select and configure a supported transactional email provider in Thrico (e.g., SendGrid, Mailgun, Amazon SES, Postmark).
+</Step>
+
+<Step>
+### Add Domain Verification Records
+Add the domain verification DNS records supplied by your email provider to your domain registrar's DNS settings.
+</Step>
+
+<Step>
+### Configure SPF, DKIM, and DMARC
+Add the required email authentication records:
+
+| Record | Purpose |
+|---|---|
+| `SPF (TXT)` | Authorizes servers allowed to send email on behalf of your domain |
+| `DKIM (TXT or CNAME)` | Cryptographically signs outbound emails to prevent spoofing |
+| `DMARC (TXT)` | Defines policy for handling emails that fail SPF/DKIM checks |
+</Step>
+
+<Step>
+### Add Verified Sender Address to Thrico
+Once the domain is verified, configure the sender address in Thrico under **Settings → Email**.
+</Step>
+
+<Step>
+### Send a Test Email
+Send a test email from the Thrico dashboard to confirm delivery, authentication, and correct sender identity.
+</Step>
+
+<Step>
+### Confirm Delivery & Authentication
+Verify that the test email arrives in the inbox (not spam), passes SPF/DKIM/DMARC checks, and displays the correct sender name and address.
+</Step>
+</Steps>
+
+<Callout type="info">
+  **Inbox Note:** A sending domain does not automatically create a receiving inbox. If your entity needs to receive replies, configure a mailbox or email forwarding service on the same domain separately.
+</Callout>
+
+---
+
+## 6. Domain Statuses in the Dashboard
+
+| Status | Meaning |
+|---|---|
+| **Pending Setup** | Configuration is incomplete |
+| **Verification Required** | DNS verification is pending |
+| **Verified** | Domain ownership is confirmed |
+| **SSL Pending** | HTTPS certificate provisioning is in progress |
+| **Active** | Domain is fully ready to use |
+| **Failed** | Configuration encountered an error — review and retry |
+
+<Callout type="info">
+  Website domain status and email verification status are tracked independently in the dashboard. Email sending is enabled only after the customer's sending domain is verified.
+</Callout>
+
+---
+
+## 7. Security & Ownership
+
+- **Thrico manages** the default subdomain under `*.thrico.community`.
+- **Customers retain ownership** of their existing or newly purchased domains.
+- Secondary domains **must be verified** before activation.
+- Each hostname must route exclusively to the correct entity.
+- **HTTPS must be enabled** for all supported website domains.
+- **Email authentication records** (SPF, DKIM, DMARC) must be correctly configured.
+- Customer-facing emails must use the **entity's own verified sending domain** — never a Thrico-owned domain.
+
+---
+
+## 8. Entity Setup Checklist
+
+### Website Domains
+- [ ] Entity created in Thrico dashboard
+- [ ] Default Thrico subdomain (`*.thrico.community`) assigned and active
+- [ ] Secondary website domain type selected (existing subdomain or new domain)
+- [ ] Required DNS records configured at the domain registrar
+- [ ] Secondary domain verification completed
+- [ ] HTTPS enabled for the secondary domain
+- [ ] Both domains confirmed routing to the correct entity
+
+### Email Sending
+- [ ] Customer-owned email-sending domain selected
+- [ ] Email delivery provider configured
+- [ ] Domain verification, SPF, DKIM, and DMARC records added
+- [ ] Verified sender address configured in Thrico
+- [ ] Test email sent and delivery confirmed
+- [ ] Email authentication (SPF/DKIM/DMARC) verified before enabling production sending
+
+---
+
+## 9. Final Requirements Summary
+
+| Requirement | Detail |
+|---|---|
+| **Default Thrico Subdomain** | Automatically assigned to every entity; no action required |
+| **Secondary Website Domain** | Required during entity setup — existing subdomain or new domain |
+| **Custom Email Domain** | Must be verified before customer-facing email sending is enabled |
+| **Administration Dashboard** | Always accessible at `https://dashboard.thrico.com` |
+| **Domain Ownership** | Customers retain full ownership of their own domains |
+| **Email Policy** | Customer-facing emails must use the entity's verified sending domain, never a Thrico-owned domain |
+
+<Cards>
+  <Card title="Custom Domains" href="/docs/entity/domains">
+    Technical guide to adding and verifying custom domains with DNS records and SSL configuration.
+  </Card>
+  <Card title="Entity Management" href="/docs/entity">
+    Overview of entity creation, branding, modules, and billing.
+  </Card>
+</Cards>
