@@ -1,4 +1,11 @@
 {
   "title": "Events",
-  "pages": ["index", "online-events", "offline-events", "rsvp", "attendance"]
+  "pages": [
+    "index",
+    "landing-pages",
+    "online-events",
+    "offline-events",
+    "rsvp",
+    "attendance"
+  ]
 }

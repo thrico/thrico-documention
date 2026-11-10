@@ -1,0 +1,211 @@
+---
+title: Event Landing Pages
+description: Give each event its own shareable public page, built automatically from your event data or designed section by section.
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Overview
+
+Every event can have its own landing page on your community's website. It's a page you can share anywhere, so people outside your community can find the event and register.
+
+The page lives at:
+
+```
+https://<your-community-domain>/e/<event-slug>
+```
+
+It uses your website's theme, font, navbar and footer, so it looks like the rest of your site. If you've connected a verified custom domain, the link uses that. Otherwise it uses your `thrico.community` subdomain.
+
+You can build the page in one of two ways:
+
+| Mode | Best for | What you control |
+|---|---|---|
+| **Auto** | Getting a page live quickly | Which sections appear, and in what order |
+| **Custom design** | A page that matches your campaign | Every section, its content and its layout |
+
+You can switch between modes at any time. Each mode keeps its own setup, so switching back doesn't lose your work.
+
+---
+
+## Before you start
+
+- You need **edit** permission for **Events** in your admin role.
+- The event must be **approved** before its landing page goes live. You can build and publish the page earlier, and it appears once the event is approved.
+
+---
+
+## Open the landing page settings
+
+<Steps>
+  <Step>
+    In the dashboard, go to **Events** and open the event.
+  </Step>
+  <Step>
+    In the event's sidebar, under **Marketing**, select **Landing Page**.
+  </Step>
+  <Step>
+    Choose **Auto** or **Custom design** under **Page type**.
+  </Step>
+</Steps>
+
+---
+
+## Build the page
+
+<Tabs items={['Auto', 'Custom design']}>
+  <Tab value="Auto">
+    Auto builds the page from your event's details. Whenever you add a speaker, change the agenda or approve a sponsor, the page updates by itself.
+
+    The page always opens with the event header (cover image, date, location and a join button). Below it, these sections are available:
+
+    - Overview
+    - Tracks
+    - Speakers
+    - Agenda
+    - Sponsors
+    - Special sponsors
+    - Media
+    - Team
+    - Payment details
+
+    Under **Sections**:
+
+    - **Drag** a section to change its position on the page.
+    - **Turn off** a section's switch to hide it.
+
+    A section with nothing in it, such as Speakers before you've added any, is left off the page automatically.
+
+    <Callout type="warn">
+      Hiding a section here also hides it on the event's page in the member app. Both pages use the same setting.
+    </Callout>
+  </Tab>
+  <Tab value="Custom design">
+    Custom design opens the same visual builder you use for your website.
+
+    <Steps>
+      <Step>
+        Under **Design**, select **Open designer**.
+      </Step>
+      <Step>
+        Your first design starts from a template: Event Header, Speakers, Agenda, Sponsors and a Register Button. Add, remove, reorder or hide sections from the panel on the left.
+      </Step>
+      <Step>
+        Select a section to edit its content and layout. Changes save automatically.
+      </Step>
+      <Step>
+        Use the back arrow to return to the landing page settings, then publish.
+      </Step>
+    </Steps>
+
+    ### Live event blocks
+
+    These blocks, under **Live Event Data**, always show your current event information:
+
+    | Block | Shows |
+    |---|---|
+    | **Event Header** | Cover, date, location and the join button, from General Info |
+    | **Speakers** | Your event's speakers |
+    | **Agenda** | Your published agenda sessions |
+    | **Sponsors** | Your approved sponsors, grouped by tier |
+    | **Register Button** | A call to action with your own heading, description and button label |
+
+    You can rename the section title of Speakers, Agenda and Sponsors. Their content comes from the event.
+
+    ### Other sections
+
+    You can also use these website sections: Stats, FAQ, CTA Banner, Logo Cloud, Timeline, Process Steps, Feature Highlights, Testimonials, Video Spotlight, Location Map, Comparison Table and Callout.
+
+    <Callout type="info">
+      HTML and embed sections aren't available on event pages, because they can run custom code on your community's domain. Site-wide sections such as login, signup, navbar and footer aren't available either.
+    </Callout>
+  </Tab>
+</Tabs>
+
+---
+
+## Search and sharing
+
+Under **Search and sharing**, you can set what search engines and social networks show:
+
+| Field | If left empty |
+|---|---|
+| **Page title** | Uses the event title |
+| **Description** | Uses the event description |
+| **Keywords** | None are set |
+| **Share image URL** | Uses the event's cover image |
+
+---
+
+## Publish
+
+Changes you make are saved as a **draft**. Visitors only see the page once you publish it.
+
+<Steps>
+  <Step>
+    Select **Save draft** in the bar at the bottom of the page to keep your changes without publishing them.
+  </Step>
+  <Step>
+    Select **Publish** in the **Status** panel. If you have unsaved changes, they're saved first.
+  </Step>
+  <Step>
+    Copy the **Public link** from the Status panel and share it.
+  </Step>
+</Steps>
+
+After the first publish, the button reads **Publish changes**. Editing the draft never changes the live page until you publish again.
+
+<Callout type="info">
+  Published changes can take up to a minute to appear on the live page.
+</Callout>
+
+To take the page down, select **Unpublish**. The link stops working, and your draft is kept so you can publish it again later.
+
+<Callout type="warn">
+  If someone else edits the same landing page while you're working on it, your next save is refused so neither of you overwrites the other. Reload the page to get their changes, then make your edits again.
+</Callout>
+
+---
+
+## Who can see the page
+
+Access follows the event's visibility:
+
+| Event visibility | Who can see the landing page |
+|---|---|
+| **Public** | Anyone with the link, without signing in |
+| **Private** | Signed-in members of your community. Everyone else is asked to sign in, and sees no event details until they do. |
+
+Registering always requires signing in. The register and join buttons take visitors to the event's page in the member app, where they complete registration.
+
+### What stays private
+
+The landing page never shows:
+
+- The attendee list
+- Speaker email addresses
+- Sponsors that haven't been approved
+- Sponsorship prices, unless the tier is set to show its price
+- Unpublished or draft agenda sessions
+- Media marked as not public
+- The content of any section you've hidden
+
+---
+
+## Troubleshooting
+
+| Problem | What to check |
+|---|---|
+| The public link shows "not found" | The page is published and the event is approved and active. |
+| A section isn't showing | The section is turned on, and it has content. Agenda sessions must be published. Sponsors must be approved. |
+| Publish says to design the page first | In Custom design, open the designer and add at least one section. |
+| Your save was refused | Someone else changed the page. Reload and make your edits again. |
+| Changes aren't live yet | Wait a minute after publishing, then refresh. |
+
+## Related Articles
+
+- [Events Overview](/docs/events)
+- [RSVP Management](/docs/events/rsvp)
+- [Entity Domain & Custom Email Setup](/docs/entity/domain-email-setup)
